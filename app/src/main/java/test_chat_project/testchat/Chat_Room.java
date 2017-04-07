@@ -13,8 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -56,7 +54,6 @@ public class Chat_Room  extends AppCompatActivity{;
     private EmojiconEditText input_msg;
     private View rootView;
     private EmojIconActions emojIcon;
-//    private EditText input_msg;
 
     private String user_name,room_name, message_time;
     private Uri filepath;
@@ -105,7 +102,6 @@ public class Chat_Room  extends AppCompatActivity{;
         rootView = (RelativeLayout) findViewById(R.id.chat_room);
         emojIcon = new EmojIconActions(getApplicationContext(),rootView,btn_emotion,input_msg);
         emojIcon.ShowEmojicon();
-//        input_msg = (EditText) findViewById(R.id.msg_input);
 
         user_name = getIntent().getExtras().get("user_name").toString();
         room_name = getIntent().getExtras().get("room_name").toString();

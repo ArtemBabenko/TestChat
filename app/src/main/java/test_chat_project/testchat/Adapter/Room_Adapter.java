@@ -2,7 +2,6 @@ package test_chat_project.testchat.Adapter;
 
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,16 +12,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
-import test_chat_project.testchat.Chat_Room;
-import test_chat_project.testchat.Item.Room_Message;
-import test_chat_project.testchat.R;
-
 import java.util.List;
 
-import static android.R.id.list;
-import static android.R.id.message;
-import static junit.runner.Version.id;
+import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
+import test_chat_project.testchat.Item.Room_Message;
+import test_chat_project.testchat.R;
 
 public class Room_Adapter extends RecyclerView.Adapter<Room_Adapter.ViewHolder> {
 
@@ -36,7 +30,6 @@ public class Room_Adapter extends RecyclerView.Adapter<Room_Adapter.ViewHolder> 
     private String mId;
     private String mIdItem;
     private Context mContext;
-    private String ItemPosicion;
 
     private List<Room_Message> mRomm_list;
 

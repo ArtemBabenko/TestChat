@@ -6,35 +6,74 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     tools:context="test_chat_project.testchat.MainActivity">
-
-    <EditText
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/room_list_element"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/room_name_edittext"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/btn_add_room"
-        android:layout_toStartOf="@+id/btn_add_room" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add room"
-        android:id="@+id/btn_add_room"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/room_name_edittext" />
+        android:layout_above="@+id/msg_layout"/>
+    <LinearLayout
+        android:id="@+id/msg_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
+        <ImageView
+            android:id="@+id/btn_room_emotion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:src="@mipmap/ic_emotion"
+            android:layout_gravity="center"/>
+        <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
+            android:id="@+id/room_name_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_gravity="center"
+            android:inputType="textCapSentences"
+            android:hint="@string/hint_text"
+            android:textColorHint="@color/colorHint"
+            app:emojiconSize="28sp"
+            android:background="#00000000"
+            />
+        <ImageView
+            android:id="@+id/btn_add_room"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_send"
+            android:layout_gravity="right|center"/>
+    </LinearLayout>
 
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/room_list_element"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_above="@+id/room_name_edittext" />-->
+
+    <!--<hani.momanii.supernova_emoji_library.Helper.EmojiconEditText-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/room_name_edittext"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_toLeftOf="@+id/btn_add_room"-->
+        <!--android:layout_toStartOf="@+id/btn_add_room" />-->
+
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Add room"-->
+        <!--android:id="@+id/btn_add_room"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentEnd="true" />-->
 </RelativeLayout>
