@@ -91,7 +91,6 @@ public class Chat_Room  extends AppCompatActivity{;
             @Override
             public void onClick(View view) {
                 showfileChoosen();
-                mIdImage = "3";
             }
         });
 
@@ -114,7 +113,7 @@ public class Chat_Room  extends AppCompatActivity{;
         btn_send_msg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (input_msg.getText().toString().equals(""))
+                if (input_msg.getText().toString().equals("") && imageURI=="empty")
                 {
 
                 }else {
@@ -137,6 +136,7 @@ public class Chat_Room  extends AppCompatActivity{;
                     imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     mIdImage = "0";
                     imageURI = "empty";
+                    btn_add_image.setImageResource(R.mipmap.ic_clippy);
                 }
             }
         });
@@ -210,12 +210,6 @@ public class Chat_Room  extends AppCompatActivity{;
 
         if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
             filepath = data.getData();
-//            try {
-//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),filepath);
-//                Toast.makeText(this,"Image add",Toast.LENGTH_LONG).show();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
             if(filepath != null) {
 
                 final ProgressDialog progresDialog = new ProgressDialog(this);
@@ -231,6 +225,8 @@ public class Chat_Room  extends AppCompatActivity{;
                                 progresDialog.dismiss();
                                 Uri downloadUri = taskSnapshot.getDownloadUrl();
                                 imageURI = String.valueOf(downloadUri);
+                                mIdImage = "3";
+                                btn_add_image.setImageResource(R.mipmap.ic_clippy_full);
 //                                Picasso.with(getApplicationContext()).load(downloadUri).fit().centerCrop().into(testImg);
                                 Toast.makeText(getApplicationContext(),"File Uploaded",Toast.LENGTH_LONG).show();
                             }
@@ -244,8 +240,8 @@ public class Chat_Room  extends AppCompatActivity{;
                         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//                    double progress = (100.0 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                        progresDialog.setMessage("% Uploaded...");
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                        progresDialog.setMessage((int)progress+"% Uploaded...");
                     }
                 });
             }else {

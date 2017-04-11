@@ -7,9 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -18,8 +15,6 @@ import test_chat_project.testchat.Chat_Room;
 import test_chat_project.testchat.Item.Room_List_Element;
 import test_chat_project.testchat.MainActivity;
 import test_chat_project.testchat.R;
-
-import static android.R.attr.name;
 
 public class Room_List_Adapter extends RecyclerView.Adapter<Room_List_Adapter.ViewHolder> {
 
