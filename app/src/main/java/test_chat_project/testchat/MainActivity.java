@@ -27,12 +27,15 @@ import java.util.Set;
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import test_chat_project.testchat.Adapter.Room_List_Adapter;
+import test_chat_project.testchat.Dialogs.Add_Room_Dialog;
 import test_chat_project.testchat.Item.Room_List_Element;
 
 public class MainActivity extends AppCompatActivity {
 
     private EmojIconActions emojIcon;
     private EmojiconEditText room_name;
+
+    Add_Room_Dialog addRoomDialog;
 
     private RecyclerView recycler;
     private Room_List_Adapter roomListAdapter;
@@ -45,17 +48,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        add_emotion = (ImageView) findViewById(R.id.btn_room_emotion);
-//        room_name = (EmojiconEditText) findViewById(R.id.room_name_edit_text);
-//        rootView = (RelativeLayout) findViewById(R.id.activity_main);
-//        emojIcon = new EmojIconActions(getApplicationContext(),rootView,add_emotion,room_name);
-//        emojIcon.ShowEmojicon();
-
+        addRoomDialog = new Add_Room_Dialog();
         FloatingActionButton add_room = (FloatingActionButton) findViewById(R.id.add_room);
         add_room.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                add_room_name();
+                addRoomDialog.show(getFragmentManager(),"Room Name");
             }
         });
 
@@ -91,35 +89,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    private void add_room_name() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter room name:");
-
-        final EmojiconEditText input_field = new EmojiconEditText(this);
-        final ImageView add_emoticon = new ImageView(this);
-        builder.setView(add_emoticon);
-
-        builder.setView(input_field);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-                Map<String,Object> map = new HashMap<String, Object>();
-                map.put(input_field.getText().toString(),"");
-                root.updateChildren(map);
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-
-        builder.show();
     }
 
     private void request_user_name() {

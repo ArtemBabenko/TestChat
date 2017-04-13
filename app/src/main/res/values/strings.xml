@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Test Chat Demo</string>
-    <string name="hint_text">Type message</string>
+    <string name="enter_name">Enter name:</string>
+    <string name="enter_room_name">Enter room name:</string>
+    <string name="hint_text">Message</string>
+    <string name="hint_room_text">Name room</string>
+    <string name="hint_room_key">Room key</string>
+    <string name="ok">OK</string>
+    <string name="cancel">CANCEL</string>
 </resources>
