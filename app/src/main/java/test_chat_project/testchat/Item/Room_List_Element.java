@@ -1,8 +1,5 @@
 package test_chat_project.testchat.Item;
 
-/**
- * Created by TimaGreat on 06.04.2017.
- */
 
 public class Room_List_Element {
     private String mNameRoom;
@@ -18,4 +15,5 @@ public class Room_List_Element {
     public void setmNameRoom(String mNameRoom) {
         this.mNameRoom = mNameRoom;
     }
+
 }

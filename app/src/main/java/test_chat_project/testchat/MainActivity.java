@@ -3,6 +3,7 @@ package test_chat_project.testchat;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -29,10 +32,10 @@ import test_chat_project.testchat.Dialogs.Add_Room_Dialog;
 import test_chat_project.testchat.Dialogs.Enter_Password_Dialog;
 import test_chat_project.testchat.Item.Room_List_Element;
 
+import static android.R.attr.key;
+
 public class MainActivity extends AppCompatActivity {
 
-    private EmojIconActions emojIcon;
-    private EmojiconEditText room_name;
 
     Add_Room_Dialog addRoomDialog;
     FragmentManager manager = getFragmentManager();
@@ -82,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 roomListAdapter.notifyDataSetChanged();
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {

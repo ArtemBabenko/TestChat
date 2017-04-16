@@ -109,9 +109,10 @@ public class Room_List_Adapter extends RecyclerView.Adapter<Room_List_Adapter.Vi
             v.getContext().startActivity(intent);
             Toast.makeText(context,key,Toast.LENGTH_LONG).show();
         }else {
-
             passwordDialog = new Enter_Password_Dialog();
             passwordDialog.show(manager, "Enter Password");
+            passwordDialog.password = key;
+            passwordDialog.roomName = holder.roomName.getText().toString();
             Toast.makeText(context, "Enter Password "+" "+key, Toast.LENGTH_SHORT).show();
         }
     }
