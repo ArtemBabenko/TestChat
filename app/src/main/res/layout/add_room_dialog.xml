@@ -67,7 +67,7 @@
         android:textColor="@color/MainBackground"
         android:textSize="16dp"
         android:text="@string/ok"
-        android:background="@drawable/button_password"
+        android:background="@drawable/button_dialog"
         />
     <TextView
         android:id="@+id/add_room_cancel"
@@ -80,7 +80,7 @@
         android:textColor="@color/MainBackground"
         android:textSize="16dp"
         android:text="@string/cancel"
-        android:background="@drawable/button_password"
+        android:background="@drawable/button_dialog"
         />
     </RelativeLayout>
 </RelativeLayout>

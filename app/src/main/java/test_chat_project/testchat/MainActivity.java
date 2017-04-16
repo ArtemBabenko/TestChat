@@ -1,5 +1,6 @@
 package test_chat_project.testchat;
 
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -9,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,16 +18,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import test_chat_project.testchat.Adapter.Room_List_Adapter;
 import test_chat_project.testchat.Dialogs.Add_Room_Dialog;
+import test_chat_project.testchat.Dialogs.Enter_Password_Dialog;
 import test_chat_project.testchat.Item.Room_List_Element;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private EmojiconEditText room_name;
 
     Add_Room_Dialog addRoomDialog;
+    FragmentManager manager = getFragmentManager();
 
     private RecyclerView recycler;
     private Room_List_Adapter roomListAdapter;
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutMenager = new LinearLayoutManager(this);
         recycler.setLayoutManager(layoutMenager);
         recycler.setHasFixedSize(true);
-        roomListAdapter = new Room_List_Adapter(list_of_rooms);
+        roomListAdapter = new Room_List_Adapter(list_of_rooms, this, manager);
         recycler.setAdapter(roomListAdapter);
 
         request_user_name();
@@ -115,6 +115,5 @@ public class MainActivity extends AppCompatActivity {
 
         builder.show();
     }
-
 
 }

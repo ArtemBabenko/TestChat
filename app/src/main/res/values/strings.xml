@@ -2,9 +2,11 @@
     <string name="app_name">Test Chat Demo</string>
     <string name="enter_name">Enter name:</string>
     <string name="enter_room_name">Enter room name:</string>
+    <string name="enter_password">Enter password:</string>
     <string name="hint_text">Message</string>
     <string name="hint_room_text">Name room</string>
     <string name="hint_room_key">Room key</string>
+    <string name="hint_room_password">Room password</string>
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
 </resources>
