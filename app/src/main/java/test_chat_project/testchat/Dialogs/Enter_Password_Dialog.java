@@ -25,7 +25,7 @@ import test_chat_project.testchat.Chat_Room;
 import test_chat_project.testchat.MainActivity;
 import test_chat_project.testchat.R;
 
-
+import static test_chat_project.testchat.MainActivity.roomListAdapter;
 
 
 public class Enter_Password_Dialog extends DialogFragment implements OnClickListener {
@@ -34,7 +34,6 @@ public class Enter_Password_Dialog extends DialogFragment implements OnClickList
     public static String password;
     public static String roomName;
     private EditText mEditTextPassword;
-    private DatabaseReference mRoot = FirebaseDatabase.getInstance().getReference().getRoot();
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -70,7 +69,6 @@ public class Enter_Password_Dialog extends DialogFragment implements OnClickList
             Toast.makeText(getActivity(), "Button Cancel", Toast.LENGTH_SHORT).show();
             dismiss();
         }
-
     }
 
 

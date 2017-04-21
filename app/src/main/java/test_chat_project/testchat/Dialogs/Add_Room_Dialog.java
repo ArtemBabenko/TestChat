@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
+import test_chat_project.testchat.Adapter.Room_List_Adapter;
 import test_chat_project.testchat.R;
 
 
@@ -24,11 +25,10 @@ public class Add_Room_Dialog extends DialogFragment implements OnClickListener {
 
     final String LOG_TAG = "myLogs";
 
-    private EditText mEditTextName;
+    public static EditText mEditTextName;
     private EditText mEditTextKey;
 
     private DatabaseReference mRoot = FirebaseDatabase.getInstance().getReference().getRoot();
-
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -50,9 +50,9 @@ public class Add_Room_Dialog extends DialogFragment implements OnClickListener {
     public void onClick(View v) {
         if(v.getId() == R.id.add_room_yes && !(mEditTextName.getText().toString().equals(""))) {
 
-            Map<String,Object> map = new HashMap<String, Object>();
-            map.put(mEditTextName.getText().toString(),"");
-            mRoot.updateChildren(map);
+//            Map<String,Object> map = new HashMap<String, Object>();
+//            map.put(mEditTextName.getText().toString(),"");
+//            mRoot.updateChildren(map);
 
             DatabaseReference message_root = mRoot.child(mEditTextName.getText().toString());
             Map<String, Object> map2 = new HashMap<String, Object>();
@@ -62,7 +62,6 @@ public class Add_Room_Dialog extends DialogFragment implements OnClickListener {
                 map2.put("key", mEditTextKey.getText().toString());
             }
             message_root.updateChildren(map2);
-
 
             dismiss();
         }else  if(v.getId() == R.id.add_room_cancel){

@@ -5,31 +5,43 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
+import java.lang.String;
+import java.util.Iterator;
 
 import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
 import test_chat_project.testchat.Chat_Room;
+import test_chat_project.testchat.Dialogs.Add_Room_Dialog;
 import test_chat_project.testchat.Dialogs.Enter_Password_Dialog;
 import test_chat_project.testchat.Item.Room_List_Element;
+import test_chat_project.testchat.Item.Room_Message;
 import test_chat_project.testchat.MainActivity;
 import test_chat_project.testchat.R;
 
+import static test_chat_project.testchat.Chat_Room.room_name;
+import static test_chat_project.testchat.Dialogs.Enter_Password_Dialog.roomName;
+
 public class Room_List_Adapter extends RecyclerView.Adapter<Room_List_Adapter.ViewHolder>{
 
-    private DatabaseReference root;
-    private String key = "";
+    private static final String TAG = "myLogs";
+
+    private String key = "null";
+    private String kay_for_image;
     private Enter_Password_Dialog passwordDialog;
     FragmentManager manager;
 
@@ -49,34 +61,29 @@ public class Room_List_Adapter extends RecyclerView.Adapter<Room_List_Adapter.Vi
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.room_list_element, parent, false);
-
+        Log.d(TAG,"SizeRoomList: "+mRomm_list_element.size());
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Room_List_Element message = mRomm_list_element.get(position);
+        final Room_List_Element message = mRomm_list_element.get(position);
         holder.roomName.setText(message.getmNameRoom());
+
+        if(!("null".equals(message.getmPasswordRoom())) && message.getmPasswordRoom() != null ){
+            holder.imageLock.setImageResource(R.mipmap.ic_key);
+        } else
+            holder.imageLock.setImageDrawable(null);
+
+        //for check password if click
         holder.cv_room_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                root = FirebaseDatabase.getInstance().getReference().child(holder.roomName.getText().toString()).child("key");
-                root.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        key = dataSnapshot.getValue(String.class);
-                        passwordCheck(holder, v, key);
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-
+                key = message.getmPasswordRoom();
+                passwordCheck(holder, v, key);
             }
 
         });
-
-
     }
 
 
@@ -101,8 +108,7 @@ public class Room_List_Adapter extends RecyclerView.Adapter<Room_List_Adapter.Vi
     }
 
     private void passwordCheck(ViewHolder holder,View v, String key){
-        if(key.equals("null")) {
-
+        if(key.equals("null")){
             Intent intent = new Intent(v.getContext(),Chat_Room.class);
             intent.putExtra("room_name",holder.roomName.getText().toString());
             intent.putExtra("user_name", MainActivity.name);
@@ -112,7 +118,7 @@ public class Room_List_Adapter extends RecyclerView.Adapter<Room_List_Adapter.Vi
             passwordDialog = new Enter_Password_Dialog();
             passwordDialog.show(manager, "Enter Password");
             passwordDialog.password = key;
-            passwordDialog.roomName = holder.roomName.getText().toString();
+            roomName = holder.roomName.getText().toString();
             Toast.makeText(context, "Enter Password "+" "+key, Toast.LENGTH_SHORT).show();
         }
     }

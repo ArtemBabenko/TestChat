@@ -55,7 +55,7 @@ public class Chat_Room  extends AppCompatActivity{;
     private View rootView;
     private EmojIconActions emojIcon;
 
-    private String user_name,room_name, message_time;
+    public static  String user_name,room_name, message_time;
     private Uri filepath;
     private StorageReference storageRefrence;
     private DatabaseReference root ;

@@ -3,15 +3,14 @@ package test_chat_project.testchat;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,31 +19,30 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
-import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import test_chat_project.testchat.Adapter.Room_List_Adapter;
 import test_chat_project.testchat.Dialogs.Add_Room_Dialog;
-import test_chat_project.testchat.Dialogs.Enter_Password_Dialog;
 import test_chat_project.testchat.Item.Room_List_Element;
-
-import static android.R.attr.key;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "myLogs";
 
     Add_Room_Dialog addRoomDialog;
     FragmentManager manager = getFragmentManager();
 
     private RecyclerView recycler;
-    private Room_List_Adapter roomListAdapter;
+    public static Room_List_Adapter roomListAdapter;
     private ArrayList<Room_List_Element> list_of_rooms = new ArrayList<>();
+
     public static String name;
+    private String kay_for_image="";
     private DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot();
+    private DatabaseReference room_root = FirebaseDatabase.getInstance().getReference().getRoot();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,31 +66,50 @@ public class MainActivity extends AppCompatActivity {
         recycler.setAdapter(roomListAdapter);
 
         request_user_name();
-
+         Log.d(TAG,"Activity Run");
         root.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Set<String> set = new HashSet<String>();
+                final SortedSet<String> set = new TreeSet<String>();
                 Iterator i = dataSnapshot.getChildren().iterator();
 
                 while (i.hasNext()){
                     set.add(((DataSnapshot)i.next()).getKey());
                 }
-                list_of_rooms.clear();
-                for(String name : set){
-                    list_of_rooms.add(new Room_List_Element(name));
+                Log.d(TAG,"SizeSet: "+set.size());
+                final int[] timer = {1};
+                for(final String string : set){
+                    room_root = FirebaseDatabase.getInstance().getReference().child(string).child("key");
+                    room_root.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(timer[0] == 1){
+                                list_of_rooms.clear();
+                            }
+                                kay_for_image = dataSnapshot.getValue(String.class);
+                                list_of_rooms.add(new Room_List_Element(string, kay_for_image));
+                                System.out.println(list_of_rooms.size());
+                                Log.d(TAG, string + " : " + kay_for_image);
+                                Log.d(TAG, "SizeList: "+ list_of_rooms.size());
+                                roomListAdapter.notifyDataSetChanged();
+                            timer[0]++;
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
+
                 }
+                list_of_rooms.clear();
                 roomListAdapter.notifyDataSetChanged();
             }
 
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
-
     }
 
     private void request_user_name() {
@@ -119,5 +136,4 @@ public class MainActivity extends AppCompatActivity {
 
         builder.show();
     }
-
 }
