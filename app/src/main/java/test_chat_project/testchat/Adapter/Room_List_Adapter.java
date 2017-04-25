@@ -101,7 +101,6 @@ public class Room_List_Adapter extends RecyclerView.Adapter<Room_List_Adapter.Vi
             intent.putExtra("room_name",holder.roomName.getText().toString());
             intent.putExtra("user_name", Main_Chat_Activity.name);
             v.getContext().startActivity(intent);
-            Toast.makeText(context,key,Toast.LENGTH_LONG).show();
         }else {
             passwordDialog = new Enter_Password_Dialog();
             passwordDialog.show(manager, "Enter Password");

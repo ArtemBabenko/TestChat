@@ -143,7 +143,8 @@ public class Main_Chat_Activity extends AppCompatActivity{
 
         switch (item.getItemId()) {
             case R.id.action_log_out:
-                auth.signOut();
+                auth.getInstance().signOut();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

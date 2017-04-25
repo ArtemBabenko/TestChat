@@ -55,8 +55,6 @@ public class Enter_Password_Dialog extends DialogFragment implements OnClickList
                 mEditTextPassword.setHintTextColor(Color.RED);
                 Toast.makeText(getActivity(),"Bad password", Toast.LENGTH_SHORT).show();
         }else if(v.getId() == R.id.add_password_cancel){
-
-            Toast.makeText(getActivity(), "Button Cancel", Toast.LENGTH_SHORT).show();
             dismiss();
         }
     }

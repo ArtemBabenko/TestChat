@@ -8,6 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.GoogleAuthUtil;
@@ -30,29 +33,31 @@ public class Main_Activity extends AppCompatActivity {
 
     public static final  String TAG = "Main_Activity";
 
-    private Button btnGoogle;
+    private View btnGoogle;
     public static final int RC_SING_IN = 1;
     private GoogleApiClient googleApiClient;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
+    private ProgressBar progressBar;
 
     private String name;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_and_password);
-
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         auth = FirebaseAuth.getInstance();
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                if(firebaseAuth.getCurrentUser() != null){
                   startActivity(new Intent(Main_Activity.this, Main_Chat_Activity.class));
+                   progressBar.setVisibility(ProgressBar.INVISIBLE);
                }
             }
         };
 
-        btnGoogle = (Button) findViewById(R.id.btnGoogle);
+        btnGoogle = (RelativeLayout) findViewById(R.id.btnGoogle);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -89,7 +94,7 @@ public class Main_Activity extends AppCompatActivity {
 
     public void onActivityResult(int recuestCode, int resultCode, Intent data){
         super.onActivityResult(recuestCode, resultCode, data);
-
+        progressBar.setVisibility(ProgressBar.VISIBLE);
         if(recuestCode == RC_SING_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             GoogleSignInAccount account = result.getSignInAccount();
