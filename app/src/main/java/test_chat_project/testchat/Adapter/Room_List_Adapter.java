@@ -12,28 +12,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Transaction;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.List;
 import java.lang.String;
-import java.util.Iterator;
 
 import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
 import test_chat_project.testchat.Chat_Room;
-import test_chat_project.testchat.Dialogs.Add_Room_Dialog;
 import test_chat_project.testchat.Dialogs.Enter_Password_Dialog;
 import test_chat_project.testchat.Item.Room_List_Element;
-import test_chat_project.testchat.Item.Room_Message;
-import test_chat_project.testchat.MainActivity;
+import test_chat_project.testchat.Main_Chat_Activity;
 import test_chat_project.testchat.R;
 
-import static test_chat_project.testchat.Chat_Room.room_name;
 import static test_chat_project.testchat.Dialogs.Enter_Password_Dialog.roomName;
 
 public class Room_List_Adapter extends RecyclerView.Adapter<Room_List_Adapter.ViewHolder>{
@@ -111,7 +99,7 @@ public class Room_List_Adapter extends RecyclerView.Adapter<Room_List_Adapter.Vi
         if(key.equals("null")){
             Intent intent = new Intent(v.getContext(),Chat_Room.class);
             intent.putExtra("room_name",holder.roomName.getText().toString());
-            intent.putExtra("user_name", MainActivity.name);
+            intent.putExtra("user_name", Main_Chat_Activity.name);
             v.getContext().startActivity(intent);
             Toast.makeText(context,key,Toast.LENGTH_LONG).show();
         }else {

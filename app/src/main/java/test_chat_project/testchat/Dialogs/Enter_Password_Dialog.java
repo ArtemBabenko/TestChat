@@ -11,21 +11,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import test_chat_project.testchat.Adapter.Room_List_Adapter;
 import test_chat_project.testchat.Chat_Room;
-import test_chat_project.testchat.MainActivity;
+import test_chat_project.testchat.Main_Chat_Activity;
 import test_chat_project.testchat.R;
-
-import static test_chat_project.testchat.MainActivity.roomListAdapter;
 
 
 public class Enter_Password_Dialog extends DialogFragment implements OnClickListener {
@@ -55,7 +45,7 @@ public class Enter_Password_Dialog extends DialogFragment implements OnClickList
             if(mEditTextPassword.getText().toString().equals(password)){
                 Intent intent = new Intent(v.getContext(),Chat_Room.class);
                 intent.putExtra("room_name",roomName);
-                intent.putExtra("user_name", MainActivity.name);
+                intent.putExtra("user_name", Main_Chat_Activity.name);
                 v.getContext().startActivity(intent);
                 Toast.makeText(getActivity(),"Good password",Toast.LENGTH_SHORT).show();
                 dismiss();

@@ -9,4 +9,8 @@
     <string name="hint_room_password">Room password</string>
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
+
+    //Menu
+    <string name="log_out">Log Out</string>
+
 </resources>

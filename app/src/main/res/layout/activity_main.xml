@@ -6,7 +6,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="test_chat_project.testchat.MainActivity">
+    tools:context="test_chat_project.testchat.Main_Chat_Activity">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/room_list_element"
         android:scrollbars="vertical"
