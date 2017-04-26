@@ -99,7 +99,7 @@ public class Room_List_Adapter extends RecyclerView.Adapter<Room_List_Adapter.Vi
         if(key.equals("null")){
             Intent intent = new Intent(v.getContext(),Chat_Room.class);
             intent.putExtra("room_name",holder.roomName.getText().toString());
-            intent.putExtra("user_name", Main_Chat_Activity.name);
+            intent.putExtra("user_name", Main_Chat_Activity.userName);
             v.getContext().startActivity(intent);
         }else {
             passwordDialog = new Enter_Password_Dialog();

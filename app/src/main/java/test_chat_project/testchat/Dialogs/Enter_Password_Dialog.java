@@ -45,15 +45,13 @@ public class Enter_Password_Dialog extends DialogFragment implements OnClickList
             if(mEditTextPassword.getText().toString().equals(password)){
                 Intent intent = new Intent(v.getContext(),Chat_Room.class);
                 intent.putExtra("room_name",roomName);
-                intent.putExtra("user_name", Main_Chat_Activity.name);
+                intent.putExtra("user_name", Main_Chat_Activity.userName);
                 v.getContext().startActivity(intent);
-                Toast.makeText(getActivity(),"Good password",Toast.LENGTH_SHORT).show();
                 dismiss();
             }else
                 mEditTextPassword.setText("");
-                mEditTextPassword.setHint("Try again");
-                mEditTextPassword.setHintTextColor(Color.RED);
-                Toast.makeText(getActivity(),"Bad password", Toast.LENGTH_SHORT).show();
+                mEditTextPassword.setHint("Incorrect password");
+                mEditTextPassword.setHintTextColor(getResources().getColor(R.color.colorHintError));
         }else if(v.getId() == R.id.add_password_cancel){
             dismiss();
         }

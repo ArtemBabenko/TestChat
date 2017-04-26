@@ -3,14 +3,17 @@
     <string name="enter_name">Enter name:</string>
     <string name="enter_room_name">Enter room name:</string>
     <string name="enter_password">Enter password:</string>
+    <string name="enter_user_name">Enter user name:</string>
     <string name="hint_text">Message</string>
     <string name="hint_room_text">Name room</string>
     <string name="hint_room_key">Room key</string>
     <string name="hint_room_password">Room password</string>
+    <string name="hint_user_name">User name</string>
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
 
     //Menu
+    <string name="change_name">Change Name</string>
     <string name="log_out">Log Out</string>
 
 </resources>

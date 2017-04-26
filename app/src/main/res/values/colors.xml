@@ -7,6 +7,7 @@
     <color name="CardBackground">#ffffff</color>
     <color name="CardBackgroundRight">#c1e5d2</color>
     <color name="colorHint">#a9a9a9</color>
+    <color name="colorHintError">#dd4b39</color>
     <color name="colorUserName">#4a4949</color>
     <color name="colorUserMassage">#6c6c6c</color>
     <color name="colorEditTextMarker">#2f905e</color>
