@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -41,7 +42,7 @@ public class Main_Chat_Activity extends AppCompatActivity {
     private final String USER_NAME = "user_name";
 
     private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle toggle;
+    ActionBarDrawerToggle toggle;
     private Toolbar toolbar;
 
 
@@ -69,7 +70,7 @@ public class Main_Chat_Activity extends AppCompatActivity {
         setTheme(R.style.AppDefault);
         setContentView(R.layout.main_chat_activity);
         initToolbar();
-//        initToggle();
+        initToggle();
         initNavigationView();
 
         auth = FirebaseAuth.getInstance();
@@ -163,15 +164,13 @@ public class Main_Chat_Activity extends AppCompatActivity {
 //        toolbar.inflateMenu(R.menu.menu_navigation)
     }
 
-//    private void initToggle() {
-//        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
-//        drawerLayout.addDrawerListener(toggle);
-//        toggle.syncState();
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setHomeButtonEnabled(true);
-//    }
+    private void initToggle() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.setDrawerListener(toggle);
+        toggle.syncState();
+    }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
