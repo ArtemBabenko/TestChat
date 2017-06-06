@@ -4,57 +4,78 @@
                 android:id="@+id/chat_room"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/chat_room_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    </android.support.design.widget.AppBarLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerRoom"
-        android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/chat_room_toolbar"
+        android:layout_above="@+id/msg_layout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/msg_layout"/>
+        android:paddingTop="8dp"
+        android:scrollbars="vertical"/>
+
     <LinearLayout
         android:id="@+id/msg_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp">
+
         <ImageView
             android:id="@+id/btn_emotion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginRight="16dp"
-            android:src="@mipmap/ic_emotion"
-            android:layout_gravity="center"/>
+            android:src="@mipmap/ic_emotion"/>
+
         <ImageView
             android:id="@+id/btn_clip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginRight="16dp"
-            android:src="@mipmap/ic_clippy"
-            android:layout_gravity="center"/>
+            android:src="@mipmap/ic_clippy"/>
+
         <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
             android:id="@+id/msg_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
             android:layout_gravity="center"
-            android:inputType="textCapSentences"
+            android:layout_weight="2"
+            android:background="#00000000"
             android:hint="@string/hint_text"
+            android:inputType="textCapSentences"
             android:textColorHint="@color/colorHint"
-            app:emojiconSize="28sp"
-            android:background="#00000000">
-            <requestFocus />
+            app:emojiconSize="28sp">
+
+            <requestFocus/>
         </hani.momanii.supernova_emoji_library.Helper.EmojiconEditText>
+
         <ImageView
             android:id="@+id/btn_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_send"
-            android:layout_gravity="right|center"/>
+            android:layout_gravity="right|center"
+            android:src="@mipmap/ic_send"/>
     </LinearLayout>
 </RelativeLayout>

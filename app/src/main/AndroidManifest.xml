@@ -7,6 +7,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
+    <user-premission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <user-premission android:name="android.permission.ACCESS_FILE_LOCATION"/>
+    <user-premission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -27,6 +31,11 @@
         <activity
             android:name=".Chat_Room"
             android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".Listener.MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme">
+        </activity>
     </application>
 
 </manifest>

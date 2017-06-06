@@ -4,5 +4,4 @@
               android:layout_height="192dp"
               android:background="@color/colorPrimary"
               android:orientation="vertical">
-
 </LinearLayout>

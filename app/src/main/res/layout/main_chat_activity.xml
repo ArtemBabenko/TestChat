@@ -6,23 +6,44 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="test_chat_project.testchat.Main_Chat_Activity">
+    android:fitsSystemWindows="true"
+    tools:context="test_chat_project.testchat.Main_Chat_Activity"
+    tools:openDrawer="start">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/room_list_element"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
-            android:scrollbars="vertical"/>
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.Toolbar
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/colorPrimary"
+                    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/room_list_element"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/app_bar"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:scrollbars="vertical"/>
+        </RelativeLayout>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/add_room"
@@ -39,8 +60,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/menu_navigation"
-        app:headerLayout="@layout/navigation_header">
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/navigation_header"
+        app:menu="@menu/menu_navigation">
     </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

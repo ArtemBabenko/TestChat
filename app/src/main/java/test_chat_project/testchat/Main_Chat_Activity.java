@@ -8,9 +8,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +40,10 @@ public class Main_Chat_Activity extends AppCompatActivity {
     private static final String TAG = "myLogs";
     private final String USER_NAME = "user_name";
 
-    private DrawerLayout coordinatorLayout;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle toggle;
+    private Toolbar toolbar;
+
 
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authStateListener;
@@ -61,7 +66,10 @@ public class Main_Chat_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AppDefault);
         setContentView(R.layout.main_chat_activity);
+        initToolbar();
+//        initToggle();
         initNavigationView();
 
         auth = FirebaseAuth.getInstance();
@@ -140,28 +148,44 @@ public class Main_Chat_Activity extends AppCompatActivity {
         });
     }
 
-    private void initNavigationView() {
-        coordinatorLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+    /**
+     * For Toolbar
+     **************************************************************/
+    private void initToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.app_name);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                return false;
+            }
+        });
+//        toolbar.inflateMenu(R.menu.menu_navigation)
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
+//    private void initToggle() {
+//        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+//        drawerLayout.addDrawerListener(toggle);
+//        toggle.syncState();
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setHomeButtonEnabled(true);
+//    }
 
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_log_out:
-                auth.getInstance().signOut();
-
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        if (id == android.R.id.accessibilityActionShowOnScreen) {
+            finish();
         }
+        return super.onOptionsItemSelected(item);
     }
+
+    private void initNavigationView() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+    }
+
+    /***********************************************************/
 
 //    private void request_user_name() {
 //        AlertDialog.Builder builder = new AlertDialog.Builder(this);

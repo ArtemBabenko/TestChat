@@ -12,8 +12,17 @@
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
 
+    //Toggle
+    <string name="open">OPEN</string>
+    <string name="close">CLOSE</string>
     //Menu
     <string name="change_name">Change Name</string>
     <string name="log_out">Log Out</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 
 </resources>
