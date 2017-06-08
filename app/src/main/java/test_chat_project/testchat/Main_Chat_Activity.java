@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -15,11 +14,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,16 +27,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Iterator;
 
 import test_chat_project.testchat.Adapter.Room_List_Adapter;
 import test_chat_project.testchat.Dialogs.Add_Room_Dialog;
 import test_chat_project.testchat.Dialogs.User_Name_Dialog;
 import test_chat_project.testchat.Item.Room_List_Element;
 
-public class Main_Chat_Activity extends AppCompatActivity {
+public class Main_Chat_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "myLogs";
     private final String USER_NAME = "user_name";
@@ -48,10 +48,13 @@ public class Main_Chat_Activity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authStateListener;
+    private FirebaseUser user;
 
+    //For save userName in file
     public static SharedPreferences sPref;
     private User_Name_Dialog userNameDialog;
 
+    //For add room
     Add_Room_Dialog addRoomDialog;
     FragmentManager manager = getFragmentManager();
 
@@ -60,6 +63,7 @@ public class Main_Chat_Activity extends AppCompatActivity {
     private ArrayList<Room_List_Element> list_of_rooms = new ArrayList<>();
 
     public static String userName;
+    public static String userEmail;
     private String kay_for_image = "";
     private DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot();
     private DatabaseReference room_root = FirebaseDatabase.getInstance().getReference().getRoot();
@@ -184,6 +188,11 @@ public class Main_Chat_Activity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
+    }
+
     /***********************************************************/
 
 //    private void request_user_name() {
@@ -211,12 +220,13 @@ public class Main_Chat_Activity extends AppCompatActivity {
 //        builder.show();
 //    }
 
-    //User Name Check
-    private void loadUserName() {
-        sPref = getPreferences(MODE_PRIVATE);
-        userName = sPref.getString(USER_NAME, "");
+
+    public void onStart() {
+        super.onStart();
+        auth.addAuthStateListener(authStateListener);
     }
 
+    //Check UserName in start
     private void checkUserName() {
         loadUserName();
         if (userName.equals("")) {
@@ -225,8 +235,25 @@ public class Main_Chat_Activity extends AppCompatActivity {
         }
     }
 
-    public void onStart() {
-        super.onStart();
-        auth.addAuthStateListener(authStateListener);
+    //UserName and Email check
+    private void loadUserName() {
+        sPref = getPreferences(MODE_PRIVATE);
+        userName = sPref.getString(USER_NAME, "");
+        user = auth.getCurrentUser();
+        userEmail = user.getEmail();
+
+        loadHeaderInfo(userName, userEmail);
     }
+
+    //Add user info in NavigationHeader
+    private void loadHeaderInfo(String userName, String userEmail) {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
+        TextView userNameHeader = (TextView) header.findViewById(R.id.userNameHeader);
+        userNameHeader.setText(userName);
+        TextView userEmailHeader = (TextView) header.findViewById(R.id.userEmailHeader);
+        userEmailHeader.setText(userEmail);
+    }
+
 }
