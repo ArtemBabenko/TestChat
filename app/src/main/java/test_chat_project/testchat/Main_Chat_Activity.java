@@ -190,7 +190,16 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        int id = item.getItemId();
+        if(id == R.id.nav_change_name){
+            userNameDialog = new User_Name_Dialog();
+            userNameDialog.show(getFragmentManager(), "User Name");
+            loadUserName();
+        }if(id == R.id.nav_logout){
+           auth.signOut();
+        }
+
+        return true;
     }
 
     /***********************************************************/
