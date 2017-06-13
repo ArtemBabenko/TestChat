@@ -33,6 +33,7 @@ import java.util.TreeSet;
 
 import test_chat_project.testchat.Adapter.Room_List_Adapter;
 import test_chat_project.testchat.Dialogs.Add_Room_Dialog;
+import test_chat_project.testchat.Dialogs.User_Change_Name_Dialog;
 import test_chat_project.testchat.Dialogs.User_Name_Dialog;
 import test_chat_project.testchat.Item.Room_List_Element;
 
@@ -53,6 +54,7 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
     //For save userName in file
     public static SharedPreferences sPref;
     private User_Name_Dialog userNameDialog;
+    private User_Change_Name_Dialog userChangeNameDialog;
 
     //For add room
     Add_Room_Dialog addRoomDialog;
@@ -192,9 +194,7 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.nav_change_name){
-            userNameDialog = new User_Name_Dialog();
-            userNameDialog.show(getFragmentManager(), "User Name");
-            loadUserName();
+          changeUserName();
         }if(id == R.id.nav_logout){
            auth.signOut();
         }
@@ -242,6 +242,12 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
             userNameDialog = new User_Name_Dialog();
             userNameDialog.show(getFragmentManager(), "User Name");
         }
+    }
+    //Change UserName in NavigationDrawer
+    private void changeUserName(){
+        userChangeNameDialog = new User_Change_Name_Dialog();
+        userChangeNameDialog.show(getFragmentManager(), "User Change Name");
+        loadUserName();
     }
 
     //UserName and Email check

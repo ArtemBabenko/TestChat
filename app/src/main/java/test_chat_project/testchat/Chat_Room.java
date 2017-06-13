@@ -15,11 +15,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -60,7 +62,11 @@ import java.lang.AbstractMethodError;
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import test_chat_project.testchat.Adapter.Room_Adapter;
+import test_chat_project.testchat.Dialogs.Delete_Room_Dialog;
+import test_chat_project.testchat.Dialogs.User_Change_Name_Dialog;
 import test_chat_project.testchat.Item.Room_Message;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 public class Chat_Room extends AppCompatActivity {
 
@@ -68,6 +74,8 @@ public class Chat_Room extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
 
     private Toolbar toolbar;
+
+    private Delete_Room_Dialog deleteRoomDialog;
 
     private String mId;
     private String mIdImage = "0";
@@ -286,7 +294,7 @@ public class Chat_Room extends AppCompatActivity {
 
 
     /**
-     * For Toolbar and button
+     * For Toolbar, button and menu
      */
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -301,12 +309,32 @@ public class Chat_Room extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.chat_room_menu, menu);
+        return true;
+    }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        switch (id) {
+            case R.id.delete_room:
+                createDeleteRoomDialog();
+                return true;
+        }
         if (id == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+    /**
+     * *******************************
+     */
+
+    private void createDeleteRoomDialog(){
+        deleteRoomDialog = new Delete_Room_Dialog();
+        deleteRoomDialog.show(getFragmentManager(), "Delete Room Dialog");
     }
 
 //    private void sendNotification() {

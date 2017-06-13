@@ -4,7 +4,6 @@ package test_chat_project.testchat.Dialogs;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,11 +13,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import test_chat_project.testchat.Main_Activity;
 import test_chat_project.testchat.Main_Chat_Activity;
 import test_chat_project.testchat.R;
 
-import static android.content.Context.MODE_PRIVATE;
 import static test_chat_project.testchat.Main_Chat_Activity.sPref;
 
 
@@ -39,7 +36,6 @@ public class User_Name_Dialog extends DialogFragment implements OnClickListener 
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.user_name_dialog, null);
         v.findViewById(R.id.add_name_yes).setOnClickListener(this);
-        v.findViewById(R.id.add_name_cancel).setOnClickListener(this);
         mEditTextName = (EditText) v.findViewById(R.id.enter_name_text);
 
         return v;
@@ -55,7 +51,6 @@ public class User_Name_Dialog extends DialogFragment implements OnClickListener 
                 saveUserName();
                 dismiss();
             }
-        } else if (v.getId() == R.id.add_name_cancel) {
         }
     }
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Test Chat Demo</string>
+    <string name="app_name">Emerald Chat Demo</string>
     <string name="enter_name">Enter name:</string>
     <string name="enter_room_name">Enter room name:</string>
     <string name="enter_password">Enter password:</string>
@@ -12,10 +12,15 @@
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
 
+    //Chat room menu
+    <string name="Delete_room">Delete room</string>
+    <string name="Delete_message">Do you really want to delete the room?</string>
+    //Change name dialog
+    <string name="enter_name_for_change">Enter name for change:</string>
     //Toggle
     <string name="open">OPEN</string>
     <string name="close">CLOSE</string>
-    //Menu
+    //Navigation Drawer
     <string name="change_name">Change Name</string>
     <string name="log_out">Log Out</string>
     <string name="title_activity_main">MainActivity</string>

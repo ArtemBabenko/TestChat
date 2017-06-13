@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -30,8 +32,16 @@ public class Add_Room_Dialog extends DialogFragment implements OnClickListener {
 
     private DatabaseReference mRoot = FirebaseDatabase.getInstance().getReference().getRoot();
 
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    public static String userEmail;
+
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        userEmail = user.getEmail();
+
         setStyle(STYLE_NO_TITLE, 0);
     }
 
@@ -49,7 +59,6 @@ public class Add_Room_Dialog extends DialogFragment implements OnClickListener {
 
     public void onClick(View v) {
         if(v.getId() == R.id.add_room_yes && !(mEditTextName.getText().toString().equals(""))) {
-
 //            Map<String,Object> map = new HashMap<String, Object>();
 //            map.put(mEditTextName.getText().toString(),"");
 //            mRoot.updateChildren(map);
@@ -58,8 +67,10 @@ public class Add_Room_Dialog extends DialogFragment implements OnClickListener {
             Map<String, Object> map2 = new HashMap<String, Object>();
             if(mEditTextKey.getText().toString().equals("")) {
                 map2.put("key", "null");
+                map2.put("creator", userEmail);
             }else {
                 map2.put("key", mEditTextKey.getText().toString());
+                map2.put("creator", userEmail);
             }
             message_root.updateChildren(map2);
 
