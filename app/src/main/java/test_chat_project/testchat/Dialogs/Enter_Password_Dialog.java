@@ -22,6 +22,7 @@ public class Enter_Password_Dialog extends DialogFragment implements OnClickList
 
     final String LOG_TAG = "myLogs";
     public static String password;
+    public static String creator;
     public static String roomName;
     private EditText mEditTextPassword;
 
@@ -44,7 +45,8 @@ public class Enter_Password_Dialog extends DialogFragment implements OnClickList
         if(v.getId() == R.id.add_password_yes && !(mEditTextPassword.getText().toString().equals(""))) {
             if(mEditTextPassword.getText().toString().equals(password)){
                 Intent intent = new Intent(v.getContext(),Chat_Room.class);
-                intent.putExtra("room_name",roomName);
+                intent.putExtra("room_name", roomName);
+                intent.putExtra("creator", creator);
                 intent.putExtra("user_name", Main_Chat_Activity.userName);
                 v.getContext().startActivity(intent);
                 dismiss();

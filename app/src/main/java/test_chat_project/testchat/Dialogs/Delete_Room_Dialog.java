@@ -9,16 +9,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import test_chat_project.testchat.Chat_Room;
 import test_chat_project.testchat.R;
+
+import static test_chat_project.testchat.Chat_Room.room_name;
 
 public class Delete_Room_Dialog extends DialogFragment implements View.OnClickListener {
 
     final String LOG_TAG = "myLogs";
+    public static String roomName;
+    private DatabaseReference root;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NO_TITLE, 0);
         setCancelable(false);
+        root = FirebaseDatabase.getInstance().getReference().child(roomName);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,7 +40,8 @@ public class Delete_Room_Dialog extends DialogFragment implements View.OnClickLi
 
     public void onClick(View v) {
         if (v.getId() == R.id.delete_room_button_yes) {
-            Toast.makeText(getActivity(),"Delete",Toast.LENGTH_SHORT).show();
+            root.removeValue();
+            getActivity().finish();
             dismiss();
         } else if (v.getId() == R.id.delete_room_button_cancel) {
             dismiss();

@@ -86,7 +86,7 @@ public class Chat_Room extends AppCompatActivity {
     private View rootView;
     private EmojIconActions emojIcon;
 
-    public static String user_name, room_name, message_time;
+    public static String creator, user_name, room_name, message_time;
     private Uri filepath;
     private StorageReference storageRefrence;
     private DatabaseReference root;
@@ -94,7 +94,7 @@ public class Chat_Room extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private FirebaseUser user;
-    static String logIn_User_Email;
+    static String userEmail;
 
     private List<Room_Message> list = new ArrayList<>();
     RecyclerView recycler;
@@ -144,6 +144,7 @@ public class Chat_Room extends AppCompatActivity {
         emojIcon = new EmojIconActions(getApplicationContext(), rootView, btn_emotion, input_msg);
         emojIcon.ShowEmojicon();
 
+        creator = getIntent().getExtras().get("creator").toString();
         user_name = getIntent().getExtras().get("user_name").toString();
         room_name = getIntent().getExtras().get("room_name").toString();
 
@@ -292,7 +293,6 @@ public class Chat_Room extends AppCompatActivity {
     }
 
 
-
     /**
      * For Toolbar, button and menu
      */
@@ -320,7 +320,11 @@ public class Chat_Room extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.delete_room:
-                createDeleteRoomDialog();
+                checkUserEmail();
+                if (userEmail.equals(creator)) {
+                    createDeleteRoomDialog();
+                } else
+                    Toast.makeText(this, "Sorry. But you do not have enough rights.", Toast.LENGTH_SHORT).show();
                 return true;
         }
         if (id == android.R.id.home) {
@@ -328,13 +332,20 @@ public class Chat_Room extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     /**
      * *******************************
      */
+    private void checkUserEmail() {
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        userEmail = user.getEmail();
+    }
 
-    private void createDeleteRoomDialog(){
+    private void createDeleteRoomDialog() {
         deleteRoomDialog = new Delete_Room_Dialog();
         deleteRoomDialog.show(getFragmentManager(), "Delete Room Dialog");
+        deleteRoomDialog.roomName = room_name;
     }
 
 //    private void sendNotification() {

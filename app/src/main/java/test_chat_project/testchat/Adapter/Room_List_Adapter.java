@@ -29,6 +29,7 @@ public class Room_List_Adapter extends RecyclerView.Adapter<Room_List_Adapter.Vi
     private static final String TAG = "myLogs";
 
     private String key = "null";
+    private String creator = "null";
     private String kay_for_image;
     private Enter_Password_Dialog passwordDialog;
     FragmentManager manager;
@@ -68,7 +69,8 @@ public class Room_List_Adapter extends RecyclerView.Adapter<Room_List_Adapter.Vi
             @Override
             public void onClick(final View v) {
                 key = message.getmPasswordRoom();
-                passwordCheck(holder, v, key);
+                creator = message.getmCreator();
+                passwordCheck(holder, v, key, creator);
             }
 
         });
@@ -95,16 +97,18 @@ public class Room_List_Adapter extends RecyclerView.Adapter<Room_List_Adapter.Vi
         }
     }
 
-    private void passwordCheck(ViewHolder holder,View v, String key){
+    private void passwordCheck(ViewHolder holder,View v, String key, String creator){
         if(key.equals("null")){
             Intent intent = new Intent(v.getContext(),Chat_Room.class);
             intent.putExtra("room_name",holder.roomName.getText().toString());
+            intent.putExtra("creator", creator);
             intent.putExtra("user_name", Main_Chat_Activity.userName);
             v.getContext().startActivity(intent);
         }else {
             passwordDialog = new Enter_Password_Dialog();
             passwordDialog.show(manager, "Enter Password");
             passwordDialog.password = key;
+            passwordDialog.creator = creator;
             roomName = holder.roomName.getText().toString();
             Toast.makeText(context, "Enter Password "+" "+key, Toast.LENGTH_SHORT).show();
         }

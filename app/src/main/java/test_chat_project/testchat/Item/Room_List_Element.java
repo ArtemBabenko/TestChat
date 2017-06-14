@@ -4,9 +4,12 @@ package test_chat_project.testchat.Item;
 public class Room_List_Element {
     private String mNameRoom;
     private String mPasswordRoom;
+    private String mCreator;
 
-    public Room_List_Element(String mNameRoom, String mPasswordRoom) {
-        this.mNameRoom = mNameRoom; this.mPasswordRoom = mPasswordRoom;
+    public Room_List_Element(String mNameRoom, String mPasswordRoom, String mCreator) {
+        this.mNameRoom = mNameRoom;
+        this.mPasswordRoom = mPasswordRoom;
+        this.mCreator = mCreator;
 
     }
 
@@ -24,6 +27,14 @@ public class Room_List_Element {
 
     public void setmPasswordRoom(String mPasswordRoom) {
         this.mPasswordRoom = mPasswordRoom;
+    }
+
+    public String getmCreator() {
+        return mCreator;
+    }
+
+    public void setmCreator(String mCreator) {
+        this.mCreator = mCreator;
     }
 
 }

@@ -67,6 +67,7 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
     public static String userName;
     public static String userEmail;
     private String kay_for_image = "";
+    private String creator = "";
     private DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot();
     private DatabaseReference room_root = FirebaseDatabase.getInstance().getReference().getRoot();
 
@@ -123,18 +124,31 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
                 Log.d(TAG, "SizeSet: " + set.size());
                 final int[] timer = {1};
                 for (final String string : set) {
+
+                    //Check key
                     room_root = FirebaseDatabase.getInstance().getReference().child(string).child("key");
+                    room_root.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            kay_for_image = dataSnapshot.getValue(String.class);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
+
+                    //Check creator, add data in ListElement
+                    room_root  = FirebaseDatabase.getInstance().getReference().child(string).child("creator");
                     room_root.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (timer[0] == 1) {
                                 list_of_rooms.clear();
                             }
-                            kay_for_image = dataSnapshot.getValue(String.class);
-                            list_of_rooms.add(new Room_List_Element(string, kay_for_image));
-                            System.out.println(list_of_rooms.size());
-                            Log.d(TAG, string + " : " + kay_for_image);
-                            Log.d(TAG, "SizeList: " + list_of_rooms.size());
+                            creator = dataSnapshot.getValue(String.class);
+                            list_of_rooms.add(new Room_List_Element(string, kay_for_image, creator));
+                            Log.d(TAG, string + " : " + kay_for_image + " : "+creator);
                             roomListAdapter.notifyDataSetChanged();
                             timer[0]++;
                         }
@@ -145,6 +159,7 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
                     });
 
                 }
+
                 list_of_rooms.clear();
                 roomListAdapter.notifyDataSetChanged();
             }
