@@ -27,7 +27,7 @@ public class Delete_Room_Dialog extends DialogFragment implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NO_TITLE, 0);
         setCancelable(false);
-        root = FirebaseDatabase.getInstance().getReference().child(roomName);
+        root = FirebaseDatabase.getInstance().getReference().child("Chat Rooms").child(roomName);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

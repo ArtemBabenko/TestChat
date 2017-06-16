@@ -35,20 +35,20 @@ public class Add_Room_Dialog extends DialogFragment implements OnClickListener {
     public static EditText mEditTextName;
     private EditText mEditTextKey;
 
-    private DatabaseReference mRoot = FirebaseDatabase.getInstance().getReference().getRoot();
+    private DatabaseReference root;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
     public static String userEmail;
     ArrayList<String> roomNames = new ArrayList<>();
-    private int mSensor = 0;
+    private int Sensor = 0;
 
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        root = FirebaseDatabase.getInstance().getReference().child("Chat Rooms");
         auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        userEmail = user.getEmail();
+        checkUserEmail();
         downloadNamesRooms();
         setStyle(STYLE_NO_TITLE, 0);
     }
@@ -68,11 +68,11 @@ public class Add_Room_Dialog extends DialogFragment implements OnClickListener {
     public void onClick(View v) {
         Log.d(TAG, "Size RoomName: " + roomNames.size());
         checkForUniqueness();
-        if (v.getId() == R.id.add_room_yes && !(mEditTextName.getText().toString().equals("")) && mSensor == 0) {
+        if (v.getId() == R.id.add_room_yes && !(mEditTextName.getText().toString().equals("")) && Sensor == 0) {
 //            Map<String, Object> map = new HashMap<String, Object>();
 //            map.put(mEditTextName.getText().toString(), "");
 //            mRoot.updateChildren(map);
-            DatabaseReference message_root = mRoot.child(mEditTextName.getText().toString());
+            DatabaseReference message_root = root.child(mEditTextName.getText().toString());
             Map<String, Object> map2 = new HashMap<String, Object>();
             if (mEditTextKey.getText().toString().equals("")) {
                 map2.put("key", "null");
@@ -83,20 +83,25 @@ public class Add_Room_Dialog extends DialogFragment implements OnClickListener {
             }
             message_root.updateChildren(map2);
             dismiss();
-        } else if (v.getId() == R.id.add_room_yes && !(mEditTextName.getText().toString().equals("")) && mSensor == 1) {
+        } else if (v.getId() == R.id.add_room_yes && !(mEditTextName.getText().toString().equals("")) && Sensor == 1) {
             mEditTextName.setText("");
             mEditTextName.setHint("The name already exists.");
             mEditTextName.setHintTextColor(getResources().getColor(R.color.colorHintError));
-            mSensor = 0;
+            Sensor = 0;
         } else if (v.getId() == R.id.add_room_cancel) {
             dismiss();
         }
 
     }
 
+    private void checkUserEmail(){
+        user = auth.getCurrentUser();
+        userEmail = user.getEmail();
+    }
+
     private void downloadNamesRooms() {
         final int[] counter = {1};
-        mRoot.addValueEventListener(new ValueEventListener() {
+        root.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -126,7 +131,7 @@ public class Add_Room_Dialog extends DialogFragment implements OnClickListener {
     public void checkForUniqueness() {
         for (String names : roomNames) {
             if (names.equals(mEditTextName.getText().toString())) {
-                mSensor = 1;
+                Sensor = 1;
             }
         }
     }
@@ -136,7 +141,7 @@ public class Add_Room_Dialog extends DialogFragment implements OnClickListener {
         super.onDismiss(dialog);
         mEditTextName.setText("");
         mEditTextKey.setText("");
-        mSensor = 0;
+        Sensor = 0;
         Log.d(TAG, "Dialog 1: onDismiss");
     }
 

@@ -68,8 +68,8 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
     public static String userEmail;
     private String kay_for_image = "";
     private String creator = "";
-    private DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot();
-    private DatabaseReference room_root = FirebaseDatabase.getInstance().getReference().getRoot();
+    private DatabaseReference root = FirebaseDatabase.getInstance().getReference().child("Chat Rooms");
+    private DatabaseReference room_root;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +126,7 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
                 for (final String string : set) {
 
                     //Check key
-                    room_root = FirebaseDatabase.getInstance().getReference().child(string).child("key");
+                    room_root = FirebaseDatabase.getInstance().getReference().child("Chat Rooms").child(string).child("key");
                     room_root.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -139,7 +139,7 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
                     });
 
                     //Check creator, add data in ListElement
-                    room_root  = FirebaseDatabase.getInstance().getReference().child(string).child("creator");
+                    room_root  = FirebaseDatabase.getInstance().getReference().child("Chat Rooms").child(string).child("creator");
                     room_root.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

@@ -150,7 +150,7 @@ public class Chat_Room extends AppCompatActivity {
 
         initToolbar();
 
-        root = FirebaseDatabase.getInstance().getReference().child(room_name);
+        root = FirebaseDatabase.getInstance().getReference().child("Chat Rooms").child(room_name);
 
 
         btn_send_msg.setOnClickListener(new View.OnClickListener() {
