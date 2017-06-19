@@ -5,15 +5,17 @@ public class Room_Message {
     private String mId;
     private String mIdImage;
     private String mNameUser;
+    private String mIconUser;
     private String mMessageUser;
     private String mMessageTime;
     private String mMessageUri;
 
-    public Room_Message(String mId, String mIdImage,  String mMessageUri, String mNameUser, String mMessageUser, String mMessageTime) {
+    public Room_Message(String mId, String mIdImage, String mMessageUri, String mNameUser, String mIconUser, String mMessageUser, String mMessageTime) {
         this.mId = mId;
         this.mIdImage = mIdImage;
-
         this.mNameUser = mNameUser;
+        this.mIconUser = mIconUser;
+
         this.mMessageUser = mMessageUser;
         this.mMessageTime = mMessageTime;
         this.mMessageUri = mMessageUri;
@@ -50,6 +52,14 @@ public class Room_Message {
 
     public void setmNameUser(String mNameUser) {
         this.mNameUser = mNameUser;
+    }
+
+    public String getmIconUser() {
+        return mIconUser;
+    }
+
+    public void setmIconUser(String mIconUser) {
+        this.mIconUser = mIconUser;
     }
 
     public String getmMessageUser() {

@@ -3,6 +3,7 @@ package test_chat_project.testchat;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -72,6 +73,8 @@ public class Chat_Room extends AppCompatActivity {
 
     private static final String TAG = "myLogs";
     private static final int PICK_IMAGE_REQUEST = 1;
+    private static final String APP_USER_INFO = "APP_USER_NAME";
+    private static final String USER_IMG_URL = "user_url";
 
     private Toolbar toolbar;
 
@@ -86,7 +89,8 @@ public class Chat_Room extends AppCompatActivity {
     private View rootView;
     private EmojIconActions emojIcon;
 
-    public static String creator, user_name, room_name, message_time;
+    public static String creator, user_name, room_name, message_time, userIconUrl = "empty";
+    public static SharedPreferences sPref;
     private Uri filepath;
     private StorageReference storageRefrence;
     private DatabaseReference root;
@@ -98,13 +102,14 @@ public class Chat_Room extends AppCompatActivity {
 
     private List<Room_Message> list = new ArrayList<>();
     RecyclerView recycler;
-    Room_Adapter adapter;
+    public static Room_Adapter adapter;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_room);
+        loadUserIconUrl();
 //        OneSignal.startInit(this).init();
 
 //        auth = FirebaseAuth.getInstance();
@@ -169,6 +174,7 @@ public class Chat_Room extends AppCompatActivity {
                     map2.put("id_image", mIdImage);
                     map2.put("img_uri", imageURI);
                     map2.put("name", user_name);
+                    map2.put("user_icon", userIconUrl);
                     map2.put("msg", input_msg.getText().toString());
                     map2.put("time", message_time);
                     message_root.updateChildren(map2);
@@ -216,7 +222,7 @@ public class Chat_Room extends AppCompatActivity {
 
     }
 
-    private String chat_id, image_id, img_uri = "empty", chat_msg, chat_user_name, chat_time;
+    private String chat_id, image_id, img_uri = "empty", chat_msg, chat_user_name, chat_user_icon = "empty", chat_time;
 
     private void append_chat_conversation(DataSnapshot dataSnapshot) {
         ArrayList<Room_Message> messages = new ArrayList<>();
@@ -229,8 +235,9 @@ public class Chat_Room extends AppCompatActivity {
             chat_msg = (String) ((DataSnapshot) i.next()).getValue();
             chat_user_name = (String) ((DataSnapshot) i.next()).getValue();
             chat_time = (String) ((DataSnapshot) i.next()).getValue();
+            chat_user_icon = (String) ((DataSnapshot) i.next()).getValue();
 
-            messages.add(new Room_Message(chat_id, image_id, img_uri, chat_user_name, chat_msg, chat_time));
+            messages.add(new Room_Message(chat_id, image_id, img_uri, chat_user_name, chat_user_icon, chat_msg, chat_time));
 
         }
         list.addAll(messages);
@@ -340,6 +347,12 @@ public class Chat_Room extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         userEmail = user.getEmail();
+    }
+
+    //Load User Icon Url
+    private void loadUserIconUrl() {
+        sPref = getSharedPreferences(APP_USER_INFO, Context.MODE_PRIVATE);
+        userIconUrl = sPref.getString(USER_IMG_URL, "empty");
     }
 
     private void createDeleteRoomDialog() {

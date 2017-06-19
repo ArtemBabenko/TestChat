@@ -96,7 +96,7 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
 
     public static String userName;
     public static String userEmail;
-    public static String userIconUrl = "";
+    public static String userIconUrl = "empty";
     private String kay_for_image = "";
     private String creator = "";
     private DatabaseReference root = FirebaseDatabase.getInstance().getReference().child("Chat Rooms");
@@ -292,8 +292,8 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
     //Load User Icon Url
     private void loadUserIconUrl() {
         sPref = getSharedPreferences(APP_USER_INFO, Context.MODE_PRIVATE);
-        userIconUrl = sPref.getString(USER_IMG_URL, "");
-        if (!(userIconUrl.equals(""))) {
+        userIconUrl = sPref.getString(USER_IMG_URL, "empty");
+        if (!(userIconUrl.equals("empty"))) {
             Picasso.with(getApplicationContext()).load(userIconUrl).fit().centerCrop().into(userProfileImage);
         }
     }
