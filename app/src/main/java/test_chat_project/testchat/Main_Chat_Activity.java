@@ -1,8 +1,11 @@
 package test_chat_project.testchat;
 
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -17,7 +20,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,22 +31,40 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Map;
+import java.util.HashMap;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import test_chat_project.testchat.Adapter.Room_List_Adapter;
 import test_chat_project.testchat.Dialogs.Add_Room_Dialog;
 import test_chat_project.testchat.Dialogs.User_Change_Name_Dialog;
 import test_chat_project.testchat.Dialogs.User_Name_Dialog;
 import test_chat_project.testchat.Item.Room_List_Element;
 
+import static android.R.attr.name;
+import static android.R.id.message;
+import static test_chat_project.testchat.Dialogs.Add_Room_Dialog.mEditTextName;
+import static test_chat_project.testchat.R.mipmap.ic_launcher;
+import static test_chat_project.testchat.R.mipmap.profile;
+
 public class Main_Chat_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "myLogs";
-    private final String USER_NAME = "user_name";
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private static final String APP_USER_INFO = "APP_USER_NAME";
+    private static final String USER_NAME = "user_name";
+    private static final String USER_IMG_URL = "user_url";
 
     private DrawerLayout drawerLayout;
     ActionBarDrawerToggle toggle;
@@ -56,6 +80,12 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
     private User_Name_Dialog userNameDialog;
     private User_Change_Name_Dialog userChangeNameDialog;
 
+    //For image profile
+    CircleImageView userProfileImage;
+    private Uri filepath;
+    private StorageReference storageRefrence;
+    private String profileImageURI = "empty";
+
     //For add room
     Add_Room_Dialog addRoomDialog;
     FragmentManager manager = getFragmentManager();
@@ -66,6 +96,7 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
 
     public static String userName;
     public static String userEmail;
+    public static String userIconUrl = "";
     private String kay_for_image = "";
     private String creator = "";
     private DatabaseReference root = FirebaseDatabase.getInstance().getReference().child("Chat Rooms");
@@ -139,7 +170,7 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
                     });
 
                     //Check creator, add data in ListElement
-                    room_root  = FirebaseDatabase.getInstance().getReference().child("Chat Rooms").child(string).child("creator");
+                    room_root = FirebaseDatabase.getInstance().getReference().child("Chat Rooms").child(string).child("creator");
                     room_root.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -148,7 +179,7 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
                             }
                             creator = dataSnapshot.getValue(String.class);
                             list_of_rooms.add(new Room_List_Element(string, kay_for_image, creator));
-                            Log.d(TAG, string + " : " + kay_for_image + " : "+creator);
+                            Log.d(TAG, string + " : " + kay_for_image + " : " + creator);
                             roomListAdapter.notifyDataSetChanged();
                             timer[0]++;
                         }
@@ -170,9 +201,7 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
         });
     }
 
-    /**
-     * For Toolbar
-     **************************************************************/
+    //Start (For Toolbar)
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
@@ -182,7 +211,6 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
                 return false;
             }
         });
-//        toolbar.inflateMenu(R.menu.menu_navigation)
     }
 
     private void initToggle() {
@@ -208,42 +236,16 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.nav_change_name){
-          changeUserName();
-        }if(id == R.id.nav_logout){
-           auth.signOut();
+        if (id == R.id.nav_change_name) {
+            changeUserName();
+        }
+        if (id == R.id.nav_logout) {
+            auth.signOut();
         }
 
         return true;
     }
-
-    /***********************************************************/
-
-//    private void request_user_name() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("Enter name:");
-//
-//        final EditText input_field = new EditText(this);
-//
-//        builder.setView(input_field);
-//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                name = input_field.getText().toString();
-//            }
-//        });
-//
-//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                dialogInterface.cancel();
-//                request_user_name();
-//            }
-//        });
-//
-//        builder.show();
-//    }
-
+    // End
 
     public void onStart() {
         super.onStart();
@@ -258,22 +260,104 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
             userNameDialog.show(getFragmentManager(), "User Name");
         }
     }
+
     //Change UserName in NavigationDrawer
-    private void changeUserName(){
+    private void changeUserName() {
         userChangeNameDialog = new User_Change_Name_Dialog();
         userChangeNameDialog.show(getFragmentManager(), "User Change Name");
         loadUserName();
     }
 
+    //Change UserProfileIcon in NavigationDrawer
+    private void changeUserIcon(String url) {
+        root = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference message_root = root.child("profile").child(userName);
+        Map<String, Object> map2 = new HashMap<String, Object>();
+        map2.put("User Profile Images", url);
+        message_root.updateChildren(map2);
+
+        saveUserIconUrlInFile(url);
+    }
+
     //UserName and Email check
     private void loadUserName() {
-        sPref = getPreferences(MODE_PRIVATE);
+        sPref = getSharedPreferences(APP_USER_INFO, Context.MODE_PRIVATE);
         userName = sPref.getString(USER_NAME, "");
         user = auth.getCurrentUser();
         userEmail = user.getEmail();
 
         loadHeaderInfo(userName, userEmail);
     }
+
+    //Load User Icon Url
+    private void loadUserIconUrl() {
+        sPref = getSharedPreferences(APP_USER_INFO, Context.MODE_PRIVATE);
+        userIconUrl = sPref.getString(USER_IMG_URL, "");
+        if (!(userIconUrl.equals(""))) {
+            Picasso.with(getApplicationContext()).load(userIconUrl).fit().centerCrop().into(userProfileImage);
+        }
+    }
+
+    //Save User Icon Url in file
+    private void saveUserIconUrlInFile(String url) {
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString(USER_IMG_URL, url);
+        ed.commit();
+    }
+
+    //Start (Choose image for profile and load in base)
+    private void showfileChoosen() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select an Image"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            filepath = data.getData();
+            if (filepath != null) {
+                final ProgressDialog progresDialog = new ProgressDialog(this);
+                progresDialog.setTitle("Uploading");
+                progresDialog.show();
+
+                storageRefrence = FirebaseStorage.getInstance().getReference();
+                StorageReference riversRef = storageRefrence.child("ProfileImages").child(filepath.getLastPathSegment());
+
+                riversRef.putFile(filepath)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                progresDialog.dismiss();
+                                Uri downloadUri = taskSnapshot.getDownloadUrl();
+                                profileImageURI = String.valueOf(downloadUri);
+                                changeUserIcon(profileImageURI);
+                                Picasso.with(getApplicationContext()).load(profileImageURI).fit().centerCrop().into(userProfileImage);
+                                Toast.makeText(getApplicationContext(), "Image Uploaded", Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                progresDialog.dismiss();
+                                Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                        progresDialog.setMessage((int) progress + "% Uploaded...");
+                    }
+                });
+            } else {
+                //Error Toast
+            }
+        }
+    }
+    //End
 
     //Add user info in NavigationHeader
     private void loadHeaderInfo(String userName, String userEmail) {
@@ -284,6 +368,14 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
         userNameHeader.setText(userName);
         TextView userEmailHeader = (TextView) header.findViewById(R.id.userEmailHeader);
         userEmailHeader.setText(userEmail);
+        userProfileImage = (CircleImageView) header.findViewById(R.id.profile_image);
+        loadUserIconUrl();
+        userProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showfileChoosen();
+            }
+        });
     }
 
 }
