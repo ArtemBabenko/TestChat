@@ -34,6 +34,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
@@ -67,7 +68,10 @@ import test_chat_project.testchat.Dialogs.Delete_Room_Dialog;
 import test_chat_project.testchat.Dialogs.User_Change_Name_Dialog;
 import test_chat_project.testchat.Item.Room_Message;
 
+import static android.R.attr.key;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static test_chat_project.testchat.Main_Chat_Activity.userIconUrl;
+import static test_chat_project.testchat.Main_Chat_Activity.userName;
 
 public class Chat_Room extends AppCompatActivity {
 
@@ -75,6 +79,7 @@ public class Chat_Room extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final String APP_USER_INFO = "APP_USER_NAME";
     private static final String USER_IMG_URL = "user_url";
+    private static final String USER_PROFILE_KEY = "user_profile_key";
 
     private Toolbar toolbar;
 
@@ -94,6 +99,7 @@ public class Chat_Room extends AppCompatActivity {
     private Uri filepath;
     private StorageReference storageRefrence;
     private DatabaseReference root;
+    private DatabaseReference root_for_key;
     private String temp_key;
 
     private FirebaseAuth auth;
@@ -352,7 +358,20 @@ public class Chat_Room extends AppCompatActivity {
     //Load User Icon Url
     private void loadUserIconUrl() {
         sPref = getSharedPreferences(APP_USER_INFO, Context.MODE_PRIVATE);
-        userIconUrl = sPref.getString(USER_IMG_URL, "empty");
+        String key = sPref.getString(USER_PROFILE_KEY, "empty");
+        root_for_key = FirebaseDatabase.getInstance().getReference().child("profile").child(key).child("User Profile Images");
+        root_for_key.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String userProfileIconUrlBase = dataSnapshot.getValue(String.class);
+                userIconUrl = userProfileIconUrlBase;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void createDeleteRoomDialog() {

@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,16 +30,21 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import test_chat_project.testchat.Item.Room_List_Element;
 import test_chat_project.testchat.Main_Chat_Activity;
 import test_chat_project.testchat.R;
 
+import static test_chat_project.testchat.Main_Chat_Activity.roomListAdapter;
 import static test_chat_project.testchat.Main_Chat_Activity.sPref;
+import static test_chat_project.testchat.Main_Chat_Activity.userName;
 
 
 public class User_Name_Dialog extends DialogFragment implements OnClickListener {
 
     private static final String TAG = "myLogs";
     private final String USER_NAME = "user_name";
+    private final String USER_PROFILE_KEY = "user_profile_key";
+    private static final String USER_IMG_URL = "user_url";
     public static final int NAME_FREE = 0;
     public static final int NAME_EXIST = 1;
     public static final int ACC_EXIST = 2;
@@ -48,11 +54,14 @@ public class User_Name_Dialog extends DialogFragment implements OnClickListener 
     private TextView mHeaderText;
 
     private DatabaseReference root;
-    private DatabaseReference root_user;
+    private DatabaseReference root_user_mail;
+    private DatabaseReference root_user_name;
+    private String temp_key;
     private FirebaseAuth auth;
     private FirebaseUser user;
     private String userEmail;
     ArrayList<String> userNames = new ArrayList<>();
+    ArrayList<String> userUniquenessKey = new ArrayList<>();
     private int Sensor = NAME_FREE;
 
 
@@ -110,15 +119,31 @@ public class User_Name_Dialog extends DialogFragment implements OnClickListener 
                 while (i.hasNext()) {
                     set.add(((DataSnapshot) i.next()).getKey());
                 }
-                if (counter[0] == 1) {
-                    userNames.clear();
-                }
+                for (final String string : set) {
 
-                userNames.addAll(set);
+                    //Check UserName from Base
+                    root_user_name = FirebaseDatabase.getInstance().getReference().child("profile").child(string).child("User Name");
+                    root_user_name.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (counter[0] == 1) {
+                                userNames.clear();
+                            }
+                            String userName = "";
+                            userName = dataSnapshot.getValue(String.class);
+                            userNames.add(userName);
+                            counter[0]++;
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
+                }
+                userUniquenessKey.clear();
+                userUniquenessKey.addAll(set);
                 Log.d(TAG, "Size UserName: " + userNames.size());
                 checkExistProfile();
-                counter[0]++;
-
             }
 
             @Override
@@ -128,17 +153,47 @@ public class User_Name_Dialog extends DialogFragment implements OnClickListener 
         });
     }
 
+    //If user ACC not new. Add old UserName and UserIcon
     public void checkExistProfile() {
-        for (final String name : userNames) {
-            root_user = FirebaseDatabase.getInstance().getReference().child("profile").child(name).child("User Email");
-            root_user.addValueEventListener(new ValueEventListener() {
+        for (final String key : userUniquenessKey) {
+            root_user_mail = FirebaseDatabase.getInstance().getReference().child("profile").child(key).child("User Email");
+            root_user_mail.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     final String userEmailInBase = dataSnapshot.getValue(String.class);
                     if (userEmailInBase.equals(userEmail)) {
-                        profileExist(name);
+                        root_user_name = FirebaseDatabase.getInstance().getReference().child("profile").child(key).child("User Name");
+                        root_user_name.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                String userName = dataSnapshot.getValue(String.class);
+                                profileExist(userName);
+                                saveUserProfileKeyInFile(key);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        root_user_name = FirebaseDatabase.getInstance().getReference().child("profile").child(key).child("User Profile Images");
+                        root_user_name.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                String userProfileImagesUrl = dataSnapshot.getValue(String.class);
+                                saveUserIconUrlInFile(userProfileImagesUrl);
+                                if(!userProfileImagesUrl.equals("null")){Picasso.with(getActivity()).load(userProfileImagesUrl).fit().centerCrop().into(Main_Chat_Activity.userProfileImage);}
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
@@ -152,7 +207,7 @@ public class User_Name_Dialog extends DialogFragment implements OnClickListener 
         mEditTextName.setCursorVisible(false);
         mEditTextName.setLongClickable(false);
         mEditTextName.setFocusable(false);
-        mHeaderText.setText("You profile name:");
+        mHeaderText.setText("We glad to see you again:");
         Sensor = ACC_EXIST;
     }
 
@@ -171,23 +226,39 @@ public class User_Name_Dialog extends DialogFragment implements OnClickListener 
 
     private void saveProfileDataInBase() {
         Map<String, Object> map = new HashMap<String, Object>();
+        temp_key = root.push().getKey();
         root.updateChildren(map);
 
-        DatabaseReference message_root = root.child(mEditTextName.getText().toString());
+        saveUserProfileKeyInFile(temp_key);
+
+        DatabaseReference message_root = root.child(temp_key);
         Map<String, Object> map2 = new HashMap<String, Object>();
         map2.put("User Email", userEmail);
+        map2.put("User Name", mEditTextName.getText().toString());
         map2.put("User Profile Images", "null");
         message_root.updateChildren(map2);
+
     }
 
     private void saveUserNameInFile(String name) {
         SharedPreferences.Editor ed = sPref.edit();
         ed.putString(USER_NAME, name);
         ed.commit();
-        Main_Chat_Activity.userName = name;
+        userName = name;
         Toast.makeText(getActivity(), "Name saved", Toast.LENGTH_SHORT).show();
     }
 
+    private void saveUserProfileKeyInFile(String key) {
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString(USER_PROFILE_KEY, key);
+        ed.commit();
+    }
+
+    private void saveUserIconUrlInFile(String url) {
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString(USER_IMG_URL, url);
+        ed.commit();
+    }
 
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);

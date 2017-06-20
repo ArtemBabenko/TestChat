@@ -84,12 +84,12 @@ public class Room_Adapter extends RecyclerView.Adapter<Room_Adapter.ViewHolder> 
         if(ImageId.equals("3")) {
             Picasso.with(mContext).load(message.getmMessageUri()).fit().centerCrop().into(holder.userMessageImage);
             holder.userName.setText(message.getmNameUser());
-            if(!message.getmIconUser().equals("empty")){Picasso.with(mContext).load(message.getmIconUser()).fit().centerCrop().into(holder.userIcon);}
+            if(!message.getmIconUser().equals("null")){Picasso.with(mContext).load(message.getmIconUser()).fit().centerCrop().into(holder.userIcon);}
             holder.userMessage.setText(message.getmMessageUser());
             holder.userMessageTime.setText(message.getmMessageTime());
         }else {
             holder.userName.setText(message.getmNameUser());
-            if(!message.getmIconUser().equals("empty")){Picasso.with(mContext).load(message.getmIconUser()).fit().centerCrop().into(holder.userIcon);}
+            if(!message.getmIconUser().equals("null")){Picasso.with(mContext).load(message.getmIconUser()).fit().centerCrop().into(holder.userIcon);}
             holder.userMessage.setText(message.getmMessageUser());
             holder.userMessageTime.setText(message.getmMessageTime());
         }
@@ -129,5 +129,6 @@ public class Room_Adapter extends RecyclerView.Adapter<Room_Adapter.ViewHolder> 
             cv = (CardView) itemView.findViewById(R.id.cv);
         }
     }
+
 
 }

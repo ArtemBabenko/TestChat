@@ -37,13 +37,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Map;
-import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import test_chat_project.testchat.Adapter.Room_List_Adapter;
@@ -52,18 +51,13 @@ import test_chat_project.testchat.Dialogs.User_Change_Name_Dialog;
 import test_chat_project.testchat.Dialogs.User_Name_Dialog;
 import test_chat_project.testchat.Item.Room_List_Element;
 
-import static android.R.attr.name;
-import static android.R.id.message;
-import static test_chat_project.testchat.Dialogs.Add_Room_Dialog.mEditTextName;
-import static test_chat_project.testchat.R.mipmap.ic_launcher;
-import static test_chat_project.testchat.R.mipmap.profile;
-
 public class Main_Chat_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "myLogs";
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final String APP_USER_INFO = "APP_USER_NAME";
     private static final String USER_NAME = "user_name";
+    private final String USER_PROFILE_KEY = "user_profile_key";
     private static final String USER_IMG_URL = "user_url";
 
     private DrawerLayout drawerLayout;
@@ -81,7 +75,7 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
     private User_Change_Name_Dialog userChangeNameDialog;
 
     //For image profile
-    CircleImageView userProfileImage;
+    public  static CircleImageView userProfileImage;
     private Uri filepath;
     private StorageReference storageRefrence;
     private String profileImageURI = "empty";
@@ -95,6 +89,7 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
     private ArrayList<Room_List_Element> list_of_rooms = new ArrayList<>();
 
     public static String userName;
+    public static String userProfileKey;
     public static String userEmail;
     public static String userIconUrl = "empty";
     private String kay_for_image = "";
@@ -270,8 +265,11 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
 
     //Change UserProfileIcon in NavigationDrawer
     private void changeUserIcon(String url) {
+        sPref = getSharedPreferences(APP_USER_INFO, Context.MODE_PRIVATE);
+        userProfileKey = sPref.getString(USER_PROFILE_KEY, "");
+
         root = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference message_root = root.child("profile").child(userName);
+        DatabaseReference message_root = root.child("profile").child(userProfileKey);
         Map<String, Object> map2 = new HashMap<String, Object>();
         map2.put("User Profile Images", url);
         message_root.updateChildren(map2);
