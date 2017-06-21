@@ -69,6 +69,7 @@ import test_chat_project.testchat.Dialogs.User_Change_Name_Dialog;
 import test_chat_project.testchat.Item.Room_Message;
 
 import static android.R.attr.key;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 import static test_chat_project.testchat.Main_Chat_Activity.userIconUrl;
 import static test_chat_project.testchat.Main_Chat_Activity.userName;
@@ -242,7 +243,7 @@ public class Chat_Room extends AppCompatActivity {
             chat_user_name = (String) ((DataSnapshot) i.next()).getValue();
             chat_time = (String) ((DataSnapshot) i.next()).getValue();
             chat_user_icon = (String) ((DataSnapshot) i.next()).getValue();
-
+            Log.d(TAG,chat_user_icon);
             messages.add(new Room_Message(chat_id, image_id, img_uri, chat_user_name, chat_user_icon, chat_msg, chat_time));
 
         }
@@ -358,20 +359,21 @@ public class Chat_Room extends AppCompatActivity {
     //Load User Icon Url
     private void loadUserIconUrl() {
         sPref = getSharedPreferences(APP_USER_INFO, Context.MODE_PRIVATE);
-        String key = sPref.getString(USER_PROFILE_KEY, "empty");
-        root_for_key = FirebaseDatabase.getInstance().getReference().child("profile").child(key).child("User Profile Images");
-        root_for_key.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String userProfileIconUrlBase = dataSnapshot.getValue(String.class);
-                userIconUrl = userProfileIconUrlBase;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        String urlIcon = sPref.getString(USER_IMG_URL, "empty");
+        userIconUrl = urlIcon;
+//        root_for_key = FirebaseDatabase.getInstance().getReference().child("profile").child(key).child("User Profile Images");
+//        root_for_key.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                String userProfileIconUrlBase = dataSnapshot.getValue(String.class);
+//                userIconUrl = userProfileIconUrlBase;
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     private void createDeleteRoomDialog() {

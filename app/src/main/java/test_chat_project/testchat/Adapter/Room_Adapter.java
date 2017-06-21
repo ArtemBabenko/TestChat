@@ -84,12 +84,14 @@ public class Room_Adapter extends RecyclerView.Adapter<Room_Adapter.ViewHolder> 
         if(ImageId.equals("3")) {
             Picasso.with(mContext).load(message.getmMessageUri()).fit().centerCrop().into(holder.userMessageImage);
             holder.userName.setText(message.getmNameUser());
-            if(!message.getmIconUser().equals("null")){Picasso.with(mContext).load(message.getmIconUser()).fit().centerCrop().into(holder.userIcon);}
+            if(!(message.getmIconUser().equals("empty"))){Picasso.with(mContext).load(message.getmIconUser()).fit().centerCrop().into(holder.userIcon);
+            }else {holder.userIcon.setImageResource(R.mipmap.profile);}
             holder.userMessage.setText(message.getmMessageUser());
             holder.userMessageTime.setText(message.getmMessageTime());
         }else {
             holder.userName.setText(message.getmNameUser());
-            if(!message.getmIconUser().equals("null")){Picasso.with(mContext).load(message.getmIconUser()).fit().centerCrop().into(holder.userIcon);}
+            if(!(message.getmIconUser().equals("empty"))){Picasso.with(mContext).load(message.getmIconUser()).fit().centerCrop().into(holder.userIcon);
+            }else {holder.userIcon.setImageResource(R.mipmap.profile);}
             holder.userMessage.setText(message.getmMessageUser());
             holder.userMessageTime.setText(message.getmMessageTime());
         }

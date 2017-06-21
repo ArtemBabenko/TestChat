@@ -183,7 +183,7 @@ public class User_Name_Dialog extends DialogFragment implements OnClickListener 
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 String userProfileImagesUrl = dataSnapshot.getValue(String.class);
                                 saveUserIconUrlInFile(userProfileImagesUrl);
-                                if(!userProfileImagesUrl.equals("null")){Picasso.with(getActivity()).load(userProfileImagesUrl).fit().centerCrop().into(Main_Chat_Activity.userProfileImage);}
+                                if(!userProfileImagesUrl.equals("empty")){Picasso.with(getActivity()).load(userProfileImagesUrl).fit().centerCrop().into(Main_Chat_Activity.userProfileImage);}
                             }
 
                             @Override
@@ -235,7 +235,7 @@ public class User_Name_Dialog extends DialogFragment implements OnClickListener 
         Map<String, Object> map2 = new HashMap<String, Object>();
         map2.put("User Email", userEmail);
         map2.put("User Name", mEditTextName.getText().toString());
-        map2.put("User Profile Images", "null");
+        map2.put("User Profile Images", "empty");
         message_root.updateChildren(map2);
 
     }
