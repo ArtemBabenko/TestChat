@@ -2,8 +2,6 @@ package test_chat_project.testchat.Adapter;
 
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,13 +17,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
 import test_chat_project.testchat.Item.Room_Message;
-import test_chat_project.testchat.Main_Activity;
-import test_chat_project.testchat.Main_Chat_Activity;
 import test_chat_project.testchat.R;
-
-import static android.R.id.message;
-import static test_chat_project.testchat.Main_Chat_Activity.sPref;
-import static test_chat_project.testchat.Main_Chat_Activity.userIconUrl;
 
 public class Room_Adapter extends RecyclerView.Adapter<Room_Adapter.ViewHolder> {
 
@@ -33,15 +25,12 @@ public class Room_Adapter extends RecyclerView.Adapter<Room_Adapter.ViewHolder> 
     private static final int CHAT_LEFT = 2;
     public static final int CHAT_RIGHT_IMAGE = 3;
     public static final int CHAT_LEFT_IMAGE = 4;
-    private static final String USER_IMG_URL = "user_url";
 
-    
+
 
     private String mId;
     private String mIdItem;
-    private static String userIconUrl = "empty";
     private Context mContext;
-    public static SharedPreferences sPref;
 
     private List<Room_Message> mRomm_list;
 
@@ -113,6 +102,7 @@ public class Room_Adapter extends RecyclerView.Adapter<Room_Adapter.ViewHolder> 
     public int getItemCount() {
         return mRomm_list.size();
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView userName,userMessageTime;

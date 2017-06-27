@@ -50,6 +50,7 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.8.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

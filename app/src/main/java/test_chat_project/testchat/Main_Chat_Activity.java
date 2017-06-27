@@ -50,6 +50,7 @@ import test_chat_project.testchat.Dialogs.Add_Room_Dialog;
 import test_chat_project.testchat.Dialogs.User_Change_Name_Dialog;
 import test_chat_project.testchat.Dialogs.User_Name_Dialog;
 import test_chat_project.testchat.Item.Room_List_Element;
+import test_chat_project.testchat.notification.FirebaseNotificationService;
 
 public class Main_Chat_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -102,6 +103,7 @@ public class Main_Chat_Activity extends AppCompatActivity implements NavigationV
         super.onCreate(savedInstanceState);
         setTheme(R.style.AppDefault);
         setContentView(R.layout.main_chat_activity);
+        startService(new Intent(this, FirebaseNotificationService.class));
         initToolbar();
         initToggle();
         initNavigationView();

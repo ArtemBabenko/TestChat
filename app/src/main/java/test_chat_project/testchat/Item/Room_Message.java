@@ -6,15 +6,18 @@ public class Room_Message {
     private String mIdImage;
     private String mNameUser;
     private String mIconUser;
+    private String mUserKeyProfile;
     private String mMessageUser;
     private String mMessageTime;
     private String mMessageUri;
 
-    public Room_Message(String mId, String mIdImage, String mMessageUri, String mNameUser, String mIconUser, String mMessageUser, String mMessageTime) {
+    public Room_Message(String mId, String mIdImage, String mMessageUri, String mNameUser, String mIconUser, String mUserKeyProfile, String mMessageUser, String mMessageTime) {
         this.mId = mId;
         this.mIdImage = mIdImage;
         this.mNameUser = mNameUser;
         this.mIconUser = mIconUser;
+        this.mUserKeyProfile = mUserKeyProfile;
+
 
         this.mMessageUser = mMessageUser;
         this.mMessageTime = mMessageTime;
@@ -60,6 +63,14 @@ public class Room_Message {
 
     public void setmIconUser(String mIconUser) {
         this.mIconUser = mIconUser;
+    }
+
+    public String getmUserKeyProfile() {
+        return mUserKeyProfile;
+    }
+
+    public void setmUserKeyProfile(String mUserKeyProfile) {
+        this.mUserKeyProfile = mUserKeyProfile;
     }
 
     public String getmMessageUser() {

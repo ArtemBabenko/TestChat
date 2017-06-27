@@ -42,6 +42,7 @@ public class Main_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_and_password);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
         auth = FirebaseAuth.getInstance();
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override

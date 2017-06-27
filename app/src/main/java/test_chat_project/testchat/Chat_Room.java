@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,8 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,44 +33,27 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.onesignal.OneSignal;
+import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.Map;
-import java.util.Scanner;
-import java.lang.AbstractMethodError;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import test_chat_project.testchat.Adapter.Room_Adapter;
 import test_chat_project.testchat.Dialogs.Delete_Room_Dialog;
-import test_chat_project.testchat.Dialogs.User_Change_Name_Dialog;
 import test_chat_project.testchat.Item.Room_Message;
-
-import static android.R.attr.key;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
-import static test_chat_project.testchat.Main_Chat_Activity.userIconUrl;
-import static test_chat_project.testchat.Main_Chat_Activity.userName;
+import test_chat_project.testchat.notification.Utilities;
 
 public class Chat_Room extends AppCompatActivity {
 
@@ -95,12 +76,12 @@ public class Chat_Room extends AppCompatActivity {
     private View rootView;
     private EmojIconActions emojIcon;
 
-    public static String creator, user_name, room_name, message_time, userIconUrl = "empty";
+    public static String creator, user_name, room_name, message_time, userIconUrl = "empty", userKeyProfile;
     public static SharedPreferences sPref;
     private Uri filepath;
     private StorageReference storageRefrence;
     private DatabaseReference root;
-    private DatabaseReference root_for_key;
+    private DatabaseReference createNotificationProfile;
     private String temp_key;
 
     private FirebaseAuth auth;
@@ -108,6 +89,7 @@ public class Chat_Room extends AppCompatActivity {
     static String userEmail;
 
     private List<Room_Message> list = new ArrayList<>();
+    private List<String> userNotificationIdList = new ArrayList<String>();
     RecyclerView recycler;
     public static Room_Adapter adapter;
 
@@ -117,6 +99,8 @@ public class Chat_Room extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_room);
         loadUserIconUrl();
+        loadUserKeyProfile();
+        checkUsersNotificationsId();
 //        OneSignal.startInit(this).init();
 
 //        auth = FirebaseAuth.getInstance();
@@ -164,7 +148,6 @@ public class Chat_Room extends AppCompatActivity {
 
         root = FirebaseDatabase.getInstance().getReference().child("Chat Rooms").child(room_name);
 
-
         btn_send_msg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -180,11 +163,14 @@ public class Chat_Room extends AppCompatActivity {
                     map2.put("id", mId);
                     map2.put("id_image", mIdImage);
                     map2.put("img_uri", imageURI);
+                    map2.put("user_key_profile", userKeyProfile);
                     map2.put("name", user_name);
                     map2.put("user_icon", userIconUrl);
                     map2.put("msg", input_msg.getText().toString());
                     map2.put("time", message_time);
                     message_root.updateChildren(map2);
+
+                    sendNotificationToUser( user_name, input_msg.getText().toString(), room_name);
 
                     input_msg.setText("");
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -229,7 +215,7 @@ public class Chat_Room extends AppCompatActivity {
 
     }
 
-    private String chat_id, image_id, img_uri = "empty", chat_msg, chat_user_name, chat_user_icon = "empty", chat_time;
+    private String chat_id, image_id, img_uri = "empty", chat_msg, chat_user_name, chat_user_icon = "empty", chat_user_key_profile, chat_time;
 
     private void append_chat_conversation(DataSnapshot dataSnapshot) {
         ArrayList<Room_Message> messages = new ArrayList<>();
@@ -243,14 +229,57 @@ public class Chat_Room extends AppCompatActivity {
             chat_user_name = (String) ((DataSnapshot) i.next()).getValue();
             chat_time = (String) ((DataSnapshot) i.next()).getValue();
             chat_user_icon = (String) ((DataSnapshot) i.next()).getValue();
-            Log.d(TAG,chat_user_icon);
-            messages.add(new Room_Message(chat_id, image_id, img_uri, chat_user_name, chat_user_icon, chat_msg, chat_time));
+            chat_user_key_profile = (String) ((DataSnapshot) i.next()).getValue();
+            Log.d(TAG, chat_user_icon);
+            messages.add(new Room_Message(chat_id, image_id, img_uri, chat_user_name, chat_user_icon, chat_user_key_profile, chat_msg, chat_time));
 
         }
         list.addAll(messages);
         recycler.scrollToPosition(list.size() - 1);
         adapter.notifyItemInserted(list.size() - 1);
     }
+
+    //User Notifications
+    private void sendNotificationToUser(String userName, String message, String roomName) {
+        auth = FirebaseAuth.getInstance();
+        boolean sensor = false;
+        String userNotificationsId = auth.getCurrentUser().getUid();
+        if(userNotificationIdList.size()==0){
+            Utilities.sendNotification(this,userNotificationsId,"Welcome to Emerald Chat.","","");
+        }else {
+            for (String usersId : userNotificationIdList) {
+                if (!usersId.equals(userNotificationsId)) {Utilities.sendNotification(this, usersId, userName+": "+message, roomName, "new_notification");
+                }else{
+                    sensor = true;
+                }
+            }
+            if(sensor == false){
+                Utilities.sendNotification(this,userNotificationsId,"Welcome to Emerald Chat.","","");
+            }
+        }
+    }
+
+    public void checkUsersNotificationsId() {
+        final int[] counter = {1};
+        createNotificationProfile = FirebaseDatabase.getInstance().getReference().child("notifications");
+        createNotificationProfile.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final SortedSet<String> set = new TreeSet<String>();
+                Iterator i = dataSnapshot.getChildren().iterator();
+                while (i.hasNext()) {
+                    set.add(((DataSnapshot) i.next()).getKey());
+                }
+                userNotificationIdList.clear();
+                userNotificationIdList.addAll(set);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+    //////////
 
     private void showfileChoosen() {
 
@@ -356,24 +385,18 @@ public class Chat_Room extends AppCompatActivity {
         userEmail = user.getEmail();
     }
 
-    //Load User Icon Url
+    //Load User Icon Url in File
     private void loadUserIconUrl() {
         sPref = getSharedPreferences(APP_USER_INFO, Context.MODE_PRIVATE);
         String urlIcon = sPref.getString(USER_IMG_URL, "empty");
         userIconUrl = urlIcon;
-//        root_for_key = FirebaseDatabase.getInstance().getReference().child("profile").child(key).child("User Profile Images");
-//        root_for_key.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                String userProfileIconUrlBase = dataSnapshot.getValue(String.class);
-//                userIconUrl = userProfileIconUrlBase;
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+    }
+
+    //Load User Key Profile
+    private void loadUserKeyProfile() {
+        sPref = getSharedPreferences(APP_USER_INFO, Context.MODE_PRIVATE);
+        String keyProfile = sPref.getString(USER_PROFILE_KEY, "empty");
+        userKeyProfile = keyProfile;
     }
 
     private void createDeleteRoomDialog() {

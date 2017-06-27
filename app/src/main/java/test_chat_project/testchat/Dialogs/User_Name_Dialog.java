@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +65,8 @@ public class User_Name_Dialog extends DialogFragment implements OnClickListener 
     ArrayList<String> userUniquenessKey = new ArrayList<>();
     private int Sensor = NAME_FREE;
 
+    private ProgressBar progressBar;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +74,7 @@ public class User_Name_Dialog extends DialogFragment implements OnClickListener 
         setCancelable(false);
         root = FirebaseDatabase.getInstance().getReference().child("profile");
         auth = FirebaseAuth.getInstance();
+
         checkUserEmail();
         downloadNamesUser();
     }
@@ -81,6 +85,8 @@ public class User_Name_Dialog extends DialogFragment implements OnClickListener 
         v.findViewById(R.id.add_name_yes).setOnClickListener(this);
         mEditTextName = (EditText) v.findViewById(R.id.enter_name_text);
         mHeaderText = (TextView) v.findViewById(R.id.enter_user_name);
+        progressBar = (ProgressBar) v.findViewById(R.id.progressBarDialogName);
+        progressBar.setVisibility(ProgressBar.VISIBLE);
         return v;
     }
 
@@ -193,11 +199,11 @@ public class User_Name_Dialog extends DialogFragment implements OnClickListener 
                         });
                     }
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
+            progressBar.setVisibility(ProgressBar.INVISIBLE);
         }
     }
 

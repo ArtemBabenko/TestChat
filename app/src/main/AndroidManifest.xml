@@ -31,11 +31,19 @@
         <activity
             android:name=".Chat_Room"
             android:windowSoftInputMode="stateHidden"/>
-        <activity
-            android:name=".Listener.MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme">
-        </activity>
+
+        <receiver
+            android:name=".notification.OnBootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".notification.FirebaseNotificationService"/>
+
     </application>
 
 </manifest>
