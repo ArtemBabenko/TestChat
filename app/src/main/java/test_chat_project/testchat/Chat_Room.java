@@ -1,13 +1,10 @@
 package test_chat_project.testchat;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,12 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -34,23 +28,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Map;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import test_chat_project.testchat.Adapter.Room_Adapter;
+import test_chat_project.testchat.Dialogs.Attach_File_Dialog;
 import test_chat_project.testchat.Dialogs.Delete_Room_Dialog;
 import test_chat_project.testchat.Item.Room_Message;
 import test_chat_project.testchat.notification.Utilities;
@@ -58,7 +50,6 @@ import test_chat_project.testchat.notification.Utilities;
 public class Chat_Room extends AppCompatActivity {
 
     private static final String TAG = "myLogs";
-    private static final int PICK_IMAGE_REQUEST = 1;
     private static final String APP_USER_INFO = "APP_USER_NAME";
     private static final String USER_IMG_URL = "user_url";
     private static final String USER_PROFILE_KEY = "user_profile_key";
@@ -68,11 +59,11 @@ public class Chat_Room extends AppCompatActivity {
     private Delete_Room_Dialog deleteRoomDialog;
 
     private String mId;
-    private String mIdImage = "0";
-    private String imageURI = "empty";
-    private ImageView btn_send_msg, btn_add_image, btn_emotion;
+    public static String mIdImage = "0";
+    public static String imageURI = "empty";
+    public static ImageView btn_send_msg, btn_add_image, btn_emotion;
 
-    private EmojiconEditText input_msg;
+    public static EmojiconEditText input_msg;
     private View rootView;
     private EmojIconActions emojIcon;
 
@@ -128,15 +119,15 @@ public class Chat_Room extends AppCompatActivity {
         btn_add_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showfileChoosen();
+                createChoiceDialog();
             }
         });
 
         btn_send_msg = (ImageView) findViewById(R.id.btn_send);
-
         btn_emotion = (ImageView) findViewById(R.id.btn_emotion);
         input_msg = (EmojiconEditText) findViewById(R.id.msg_input);
         rootView = (RelativeLayout) findViewById(R.id.chat_room);
+
         emojIcon = new EmojIconActions(getApplicationContext(), rootView, btn_emotion, input_msg);
         emojIcon.ShowEmojicon();
 
@@ -170,7 +161,7 @@ public class Chat_Room extends AppCompatActivity {
                     map2.put("time", message_time);
                     message_root.updateChildren(map2);
 
-                    sendNotificationToUser( user_name, input_msg.getText().toString(), room_name);
+                    sendNotificationToUser(user_name, input_msg.getText().toString(), room_name);
 
                     input_msg.setText("");
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -178,6 +169,7 @@ public class Chat_Room extends AppCompatActivity {
                     mIdImage = "0";
                     imageURI = "empty";
                     btn_add_image.setImageResource(R.mipmap.ic_clippy);
+                    input_msg.setHint("Message");
                 }
             }
         });
@@ -239,22 +231,23 @@ public class Chat_Room extends AppCompatActivity {
         adapter.notifyItemInserted(list.size() - 1);
     }
 
-    //User Notifications
+    //Start (User Notifications)
     private void sendNotificationToUser(String userName, String message, String roomName) {
         auth = FirebaseAuth.getInstance();
         boolean sensor = false;
         String userNotificationsId = auth.getCurrentUser().getUid();
-        if(userNotificationIdList.size()==0){
-            Utilities.sendNotification(this,userNotificationsId,"Welcome to Emerald Chat.","","");
-        }else {
+        if (userNotificationIdList.size() == 0) {
+            Utilities.sendNotification(this, userNotificationsId, "Welcome to Emerald Chat.", "", "");
+        } else {
             for (String usersId : userNotificationIdList) {
-                if (!usersId.equals(userNotificationsId)) {Utilities.sendNotification(this, usersId, userName+": "+message, roomName, "new_notification");
-                }else{
+                if (!usersId.equals(userNotificationsId)) {
+                    Utilities.sendNotification(this, usersId, userName + ": " + message, roomName, "new_notification");
+                } else {
                     sensor = true;
                 }
             }
-            if(sensor == false){
-                Utilities.sendNotification(this,userNotificationsId,"Welcome to Emerald Chat.","","");
+            if (sensor == false) {
+                Utilities.sendNotification(this, userNotificationsId, "Welcome to Emerald Chat.", "", "");
             }
         }
     }
@@ -279,62 +272,7 @@ public class Chat_Room extends AppCompatActivity {
             }
         });
     }
-    //////////
-
-    private void showfileChoosen() {
-
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select an Image"), PICK_IMAGE_REQUEST);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            filepath = data.getData();
-            if (filepath != null) {
-
-                final ProgressDialog progresDialog = new ProgressDialog(this);
-                progresDialog.setTitle("Uploading");
-                progresDialog.show();
-
-                StorageReference riversRef = storageRefrence.child("Images").child(filepath.getLastPathSegment());
-
-                riversRef.putFile(filepath)
-                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                progresDialog.dismiss();
-                                Uri downloadUri = taskSnapshot.getDownloadUrl();
-                                imageURI = String.valueOf(downloadUri);
-                                mIdImage = "3";
-                                btn_add_image.setImageResource(R.mipmap.ic_clippy_full);
-//                                Picasso.with(getApplicationContext()).load(downloadUri).fit().centerCrop().into(testImg);
-                                Toast.makeText(getApplicationContext(), "File Uploaded", Toast.LENGTH_LONG).show();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                progresDialog.dismiss();
-                                Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                        progresDialog.setMessage((int) progress + "% Uploaded...");
-                    }
-                });
-            } else {
-                //Error Toast
-            }
-        }
-    }
-
+    //End
 
     /**
      * For Toolbar, button and menu
@@ -405,73 +343,11 @@ public class Chat_Room extends AppCompatActivity {
         deleteRoomDialog.roomName = room_name;
     }
 
-//    private void sendNotification() {
-//        AsyncTask.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                int SDK_INT = android.os.Build.VERSION.SDK_INT;
-//                if (SDK_INT > 8) {
-//                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-//                            .permitAll().build();
-//                    StrictMode.setThreadPolicy(policy);
-//                    String send_email;
-//                    if (Chat_Room.logIn_User_Email.equals("timagrid.mail@gmail.com")) {
-//                        send_email = "artembabenko.work@gmail.com";
-//                    } else {
-//                        send_email = "timagrid.mail@gmail.com";
-//                    }
-//
-//
-//                    try {
-//                        String jsonResponse;
-//                        URL url = new URL("https://onesignal.com/api/v1/notifications");
-//                        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//                        con.setUseCaches(false);
-//                        con.setDoOutput(true);
-//                        con.setDoInput(true);
-//
-//                        con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-//                        con.setRequestProperty("Authorization", "Basic MTRkZThjMjgtOWU4My00ZTQ5LThjOTEtMTlkOWZmNzllODgw");
-//                        con.setRequestMethod("POST");
-//
-//                        String jsonBody = "{"
-//                                + "\"app_id\": \"df037a36-e2e8-4336-9485-1de4455a1f34\","
-//                                + "\"filters\": [{\"field\": \"tag\", \"key\": \"User_ID\", \"relation\": \"=\", \"value\": \"" + send_email + "\"}],"
-//                                + "\"data\": {\"foo\": \"bar\"},"
-//                                + "\"contents\": {\"en\": \"English Message\"}"
-//                                + "}";
-//
-//                        System.out.println("strJsonBody:\n" + jsonBody);
-//
-//                        byte[] sendBytes = jsonBody.getBytes("UTF-8");
-//                        con.setFixedLengthStreamingMode(sendBytes.length);
-//
-//                        OutputStream outputStream = con.getOutputStream();
-//                        outputStream.write(sendBytes);
-//
-//                        int httpResponse = con.getResponseCode();
-//                        System.out.println("httpResponse: "+httpResponse);
-//
-//                        if(httpResponse >= HttpURLConnection.HTTP_OK
-//                                && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST){
-//                            Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
-//                            jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
-//                            scanner.close();
-//                        }else {
-//                            Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
-//                            jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
-//                            scanner.close();
-//                        }
-//                        System.out.println("jsonResponse:\n"+jsonResponse);
-//
-//                    } catch (Throwable t) {
-//                        t.printStackTrace();
-//                    }
-//
-//                }
-//            }
-//        });
-//    }
+    //Start (Load and send image)
 
+    public void createChoiceDialog() {
+        Attach_File_Dialog attachFiledialog = new Attach_File_Dialog();
+        attachFiledialog.show(getFragmentManager(), "Choice file");
+    }
 }
 

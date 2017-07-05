@@ -4,12 +4,15 @@ package test_chat_project.testchat.Adapter;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -67,11 +70,11 @@ public class Room_Adapter extends RecyclerView.Adapter<Room_Adapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         Room_Message message = mRomm_list.get(position);
         String ImageId  = message.getmIdImage();
         if(ImageId.equals("3")) {
-            Picasso.with(mContext).load(message.getmMessageUri()).fit().centerCrop().into(holder.userMessageImage);
+            Picasso.with(mContext).load(message.getmMessageUri()).resize(600,200).centerInside().into(holder.userMessageImage);
             holder.userName.setText(message.getmNameUser());
             if(!(message.getmIconUser().equals("empty"))){Picasso.with(mContext).load(message.getmIconUser()).fit().centerCrop().into(holder.userIcon);
             }else {holder.userIcon.setImageResource(R.mipmap.profile);}
@@ -84,6 +87,7 @@ public class Room_Adapter extends RecyclerView.Adapter<Room_Adapter.ViewHolder> 
             holder.userMessage.setText(message.getmMessageUser());
             holder.userMessageTime.setText(message.getmMessageTime());
         }
+
     }
 
     @Override
@@ -103,12 +107,11 @@ public class Room_Adapter extends RecyclerView.Adapter<Room_Adapter.ViewHolder> 
         return mRomm_list.size();
     }
 
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView userName,userMessageTime;
         CircleImageView userIcon;
         EmojiconTextView userMessage;
-        ImageView userMessageImage;
+        RoundedImageView userMessageImage;
         CardView cv;
 
         public ViewHolder(View itemView) {
@@ -117,7 +120,7 @@ public class Room_Adapter extends RecyclerView.Adapter<Room_Adapter.ViewHolder> 
             userIcon = (CircleImageView) itemView.findViewById(R.id.iconUser);
             userMessage = (EmojiconTextView) itemView.findViewById(R.id.messageUser);
             userMessageTime = (TextView) itemView.findViewById(R.id.messageTime);
-            userMessageImage = (ImageView) itemView.findViewById(R.id.imageUser);
+            userMessageImage = (RoundedImageView) itemView.findViewById(R.id.imageUser);
             cv = (CardView) itemView.findViewById(R.id.cv);
         }
     }

@@ -17,6 +17,8 @@
     <string name="Delete_message">Do you really want to delete the room?</string>
     //Change name dialog
     <string name="enter_name_for_change">Enter name for change:</string>
+    //Attach file dialog
+    <string name="choose_source">Choose source:</string>
     //Toggle
     <string name="open">OPEN</string>
     <string name="close">CLOSE</string>

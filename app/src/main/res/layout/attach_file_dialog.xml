@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+    <TextView
+        android:id="@+id/choose_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="24dp"
+        android:text="@string/choose_source"
+        android:textColor="@color/colorUserName"
+        android:textSize="20dp"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:id="@+id/button_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/choose_source"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/attach_image_gallery"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/ic_image"/>
+
+        <ImageView
+            android:id="@+id/attach_image_camera"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/ic_camera"
+            />
+
+        <ImageView
+            android:id="@+id/attach_image_file"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/ic_file"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_below="@+id/button_group"
+        android:layout_marginTop="24dp">
+
+        <TextView
+            android:id="@+id/attach_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/button_dialog"
+            android:gravity="top"
+            android:padding="8dp"
+            android:text="@string/cancel"
+            android:textColor="@color/MainBackground"
+            android:textSize="16dp"
+            />
+    </RelativeLayout>
+</RelativeLayout>
